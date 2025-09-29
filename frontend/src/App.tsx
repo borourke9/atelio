@@ -14,7 +14,7 @@ import type { PlacedFurniture } from './types';
 function AppContent() {
   const { state, dispatch, saveDesign } = useRoom();
   const { setLoading } = useLoading();
-  const canvasRef = useRef<{ addFurnitureToCanvas: (furniture: PlacedFurniture) => void; addOverlayFromUrl: (url: string, opts?: { x?: number; y?: number; scale?: number; rotation?: number }) => void }>(null);
+  const canvasRef = useRef<{ addFurnitureToCanvas: (furniture: PlacedFurniture) => void; addOverlayFromUrl: (url: string, opts?: { x?: number; y?: number; scale?: number; rotation?: number }) => void; setBackgroundFromUrl: (url: string) => void }>(null);
   const [isCatalogOpen, setIsCatalogOpen] = useState(true);
   const [showRestoreBanner, setShowRestoreBanner] = useState(false);
   const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
@@ -85,8 +85,17 @@ function AppContent() {
   };
 
   const handleGeneratePhoto = () => {
-    if (state.selectedItem) {
-      setIsGenerateModalOpen(true);
+    if (state.selectedItem && state.design.backgroundPhoto) {
+      // Trigger the same flow as clicking a catalog item
+      // This will be handled by the CatalogSidebar's confirm modal
+      const catalogSidebar = document.querySelector('[data-catalog-sidebar]');
+      if (catalogSidebar) {
+        // Find the selected item button and click it
+        const selectedButton = catalogSidebar.querySelector(`[data-item-id="${state.selectedItem.id}"]`);
+        if (selectedButton) {
+          (selectedButton as HTMLButtonElement).click();
+        }
+      }
     }
   };
 
@@ -142,7 +151,7 @@ function AppContent() {
       <div className="flex-1 flex overflow-hidden">
         {/* Sidebar */}
         <div className={`${isCatalogOpen ? 'block' : 'hidden'} md:block`}>
-          <CatalogSidebar />
+          <CatalogSidebar canvasRef={canvasRef} />
         </div>
 
           {/* Canvas Area */}

@@ -3,19 +3,28 @@ import { Search, Loader2 } from 'lucide-react';
 import { useCatalog } from '../hooks/useCatalog';
 import { useRoom } from '../context/RoomContext';
 import { debounce } from '../utils/debounce';
+import { generateRoom } from '../services/generationService';
+import { ConfirmGenerateModal } from './ConfirmGenerateModal';
+import { GenerateProgressModal } from './GenerateProgressModal';
 import toast from 'react-hot-toast';
 import type { CatalogItem } from '../types';
 
 interface CatalogSidebarProps {
   onSelectFurniture?: (item: CatalogItem) => void;
+  canvasRef?: React.RefObject<{ addFurnitureToCanvas: (furniture: any) => void; addOverlayFromUrl: (url: string, opts?: any) => void; setBackgroundFromUrl: (url: string) => void } | null>;
 }
 
-export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
+export function CatalogSidebar({ onSelectFurniture, canvasRef }: CatalogSidebarProps) {
   const { items, loading, error } = useCatalog();
   const { hasPhoto, state, setSelectedItem } = useRoom();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showProgressModal, setShowProgressModal] = useState(false);
+  const [selectedItem, setSelectedItemLocal] = useState<CatalogItem | null>(null);
+  const [progress, setProgress] = useState(0);
+  const [currentStep, setCurrentStep] = useState<"analyze" | "remove" | "place">("analyze");
 
   const debouncedSetSearch = useMemo(
     () => debounce((term: string) => setDebouncedSearchTerm(term), 250),
@@ -51,16 +60,15 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
 
 
   const handleFurnitureSelect = useCallback((item: CatalogItem) => {
-    // Select the item (works even without photo for room generation)
-    setSelectedItem(item);
-    
     if (!hasPhoto) {
-      // If no photo, show message about generating a new room
-      toast.success(`Selected ${item.name}. Upload a room photo or click "Generate Photo" to create a new room!`);
-    } else {
-      // If photo exists, show message about replacement
-      toast.success(`Selected ${item.name}. Click "Generate Photo" to replace furniture in your room!`);
+      toast.error('Upload a room photo first.');
+      return;
     }
+
+    // Set selected item and show confirm modal
+    setSelectedItem(item);
+    setSelectedItemLocal(item);
+    setShowConfirmModal(true);
     
     // Call the optional callback
     if (onSelectFurniture) {
@@ -68,8 +76,41 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
     }
   }, [hasPhoto, setSelectedItem, onSelectFurniture]);
 
+  const handleConfirmGenerate = useCallback(async () => {
+    if (!selectedItem || !state.design.backgroundPhoto) return;
+
+    setShowConfirmModal(false);
+    setShowProgressModal(true);
+    setProgress(0);
+    setCurrentStep("analyze");
+
+    try {
+      await generateRoom({
+        photoBlobOrDataUrl: state.design.backgroundPhoto,
+        category: selectedItem.category,
+        replacementImage: selectedItem.imageUrl,
+        onProgress: (step, pct) => {
+          setCurrentStep(step);
+          setProgress(pct);
+        },
+        onOverlayPlace: (imageUrl) => {
+          if (canvasRef?.current) {
+            canvasRef.current.addOverlayFromUrl(imageUrl, { scale: 0.6 });
+          }
+        }
+      });
+
+      toast.success('Swap complete — you can fine-tune if you like.');
+    } catch (error) {
+      console.error('Generation failed:', error);
+      toast.error('Failed to generate room');
+    } finally {
+      setShowProgressModal(false);
+    }
+  }, [selectedItem, state.design.backgroundPhoto, canvasRef]);
+
   return (
-    <aside className="w-72 shrink-0 border-r bg-white">
+    <aside className="w-72 shrink-0 border-r bg-white" data-catalog-sidebar>
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Furniture Catalog</h2>
@@ -129,6 +170,7 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
               return (
                 <button
                   key={item.id}
+                  data-item-id={item.id}
                   onClick={() => handleFurnitureSelect(item)}
                   className={`w-full text-left border rounded-xl shadow-sm hover:shadow-md hover:scale-[1.01] transition p-3 mb-3 ${
                     isSelected
@@ -158,6 +200,22 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
             )}
         </div>
       </div>
+
+      {/* Modals */}
+      <ConfirmGenerateModal
+        open={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        item={selectedItem}
+        onConfirm={handleConfirmGenerate}
+      />
+
+      <GenerateProgressModal
+        open={showProgressModal}
+        onClose={() => setShowProgressModal(false)}
+        item={selectedItem}
+        progress={progress}
+        step={currentStep}
+      />
     </aside>
   );
 }

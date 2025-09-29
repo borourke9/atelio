@@ -11,6 +11,7 @@ interface CanvasEditorProps {
 export interface CanvasEditorRef {
   addFurnitureToCanvas: (furniture: PlacedFurniture) => void;
   addOverlayFromUrl: (url: string, opts?: { x?: number; y?: number; scale?: number; rotation?: number }) => void;
+  setBackgroundFromUrl: (url: string) => void;
 }
 
 export const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(({ onObjectModified }, ref) => {
@@ -243,10 +244,46 @@ export const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(({ on
     });
   };
 
+  const setBackgroundFromUrl = (url: string) => {
+    if (!fabricCanvasRef.current) return;
+
+    fabric.Image.fromURL(url, (img: any) => {
+      if (!fabricCanvasRef.current) return;
+
+      const canvas = fabricCanvasRef.current;
+      const canvasWidth = canvas.getWidth();
+      const canvasHeight = canvas.getHeight();
+
+      // Calculate scale to fit image while maintaining aspect ratio
+      const scaleX = canvasWidth / img.width;
+      const scaleY = canvasHeight / img.height;
+      const scale = Math.min(scaleX, scaleY);
+
+      img.set({
+        left: canvasWidth / 2,
+        top: canvasHeight / 2,
+        scaleX: scale,
+        scaleY: scale,
+        originX: 'center',
+        originY: 'center',
+        selectable: false,
+        evented: false,
+        data: {
+          isBackground: true,
+        },
+      });
+
+      // Clear existing background and overlays
+      canvas.clear();
+      canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+    });
+  };
+
   // Expose functions to parent components
   useImperativeHandle(ref, () => ({
     addFurnitureToCanvas,
     addOverlayFromUrl,
+    setBackgroundFromUrl,
   }));
 
   return (
