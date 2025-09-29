@@ -98,7 +98,7 @@ export function UploadArea({ onUpload }: UploadAreaProps) {
                 Upload Room Photo
               </h3>
               <p className="text-gray-600 mb-6 text-lg leading-relaxed">
-                Drag and drop your room photo here, or click to browse
+                Upload a photo, then choose a replacement. Our AI will swap it automatically.
               </p>
               <button
                 onClick={() => {

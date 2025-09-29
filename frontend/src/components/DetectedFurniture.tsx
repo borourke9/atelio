@@ -47,10 +47,10 @@ export function DetectedFurniture({ detections, catalog }: DetectedFurnitureProp
         
         const data = await response.json();
         
-        if (data.success && data.updatedPhoto) {
-          // Update the background photo with the swapped result
-          dispatch({ type: 'SET_BACKGROUND_PHOTO', payload: data.updatedPhoto });
-          toast.success(`Placed ${item.name}`, { id: loadingToast });
+          if (data.success && data.updatedPhoto) {
+            // Update the background photo with the swapped result
+            dispatch({ type: 'SET_BACKGROUND_PHOTO', payload: data.updatedPhoto });
+            toast.success(`Swap complete - We replaced your ${item.category}. You can fine-tune the position if you'd like.`, { id: loadingToast });
         } else {
           throw new Error(data.error || 'Swap failed');
         }
@@ -65,8 +65,8 @@ export function DetectedFurniture({ detections, catalog }: DetectedFurnitureProp
           imageUrl: item.imageUrl,
           category: item.category,
         };
-        dispatch({ type: 'ADD_FURNITURE', payload: newFurniture });
-        toast.success(`Placed ${item.name}`, { id: loadingToast });
+          dispatch({ type: 'ADD_FURNITURE', payload: newFurniture });
+          toast.success(`Swap complete - We replaced your ${item.category}. You can fine-tune the position if you'd like.`, { id: loadingToast });
       }
     } catch (error) {
       console.error('Failed to place furniture:', error);
@@ -103,9 +103,11 @@ export function DetectedFurniture({ detections, catalog }: DetectedFurnitureProp
             ✓
           </span>
           <div>
-            <h3 className="font-semibold text-gray-800">Furniture Detected</h3>
+            <h3 className="font-semibold text-gray-800">
+              {isOpen ? `We detected a ${bestDetection.category} in your room.` : `✅ Detected ${bestDetection.category}. Pick a replacement to auto-swap.`}
+            </h3>
             <p className="text-sm text-gray-500">
-              We detected a {bestDetection.category} ({confidence.label})
+              {isOpen ? 'Choose a replacement from the catalog — the swap happens automatically.' : ''}
             </p>
           </div>
         </div>

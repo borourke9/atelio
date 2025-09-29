@@ -53,7 +53,7 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
   const handleFurnitureSelect = useCallback(async (item: CatalogItem) => {
     try {
       // Show loading toast
-      const loadingToast = toast.loading(`Adding ${item.name} to room...`);
+      const loadingToast = toast.loading(`Swapping ${item.category}...`);
 
       if (!hasPhoto) {
         // If no room photo exists, use the furniture image as the background
@@ -70,7 +70,7 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
           category: item.category,
         };
         dispatch({ type: 'ADD_FURNITURE', payload: newFurniture });
-        toast.success(`Added ${item.name} to room`, { id: loadingToast });
+        toast.success(`Swap complete - We replaced your ${item.category}. You can fine-tune the position if you'd like.`, { id: loadingToast });
       }
 
       // Call the optional callback
