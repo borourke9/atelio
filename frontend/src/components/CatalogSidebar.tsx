@@ -12,7 +12,7 @@ interface CatalogSidebarProps {
 
 export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
   const { items, loading, error } = useCatalog();
-  const { hasPhoto, state, dispatch } = useRoom();
+  const { hasPhoto, dispatch } = useRoom();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
@@ -49,7 +49,6 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
     }));
   }, [items]);
 
-  const detectedCategory = state.detectedObjects[0]?.category;
 
   const handleFurnitureSelect = useCallback(async (item: CatalogItem) => {
     try {
@@ -151,7 +150,7 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
                   alt={item.name} 
                   className="absolute inset-0 w-full h-full object-contain rounded-lg bg-gray-50" 
                   onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5YTNhZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlPC90ZXh0Pjwvc3ZnPg==';
+                    (e.currentTarget as HTMLImageElement).src = "/images/placeholder.png";
                   }}
                 />
               </div>

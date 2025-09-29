@@ -154,6 +154,9 @@ export function DetectedFurniture({ detections, catalog }: DetectedFurnitureProp
                       src={item.imageUrl}
                       alt={item.name}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = "/images/placeholder.png";
+                      }}
                     />
                   </div>
                   <p className="text-xs font-medium text-gray-900 text-center">{item.name}</p>
