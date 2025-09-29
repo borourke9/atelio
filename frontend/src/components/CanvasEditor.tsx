@@ -10,6 +10,7 @@ interface CanvasEditorProps {
 
 export interface CanvasEditorRef {
   addFurnitureToCanvas: (furniture: PlacedFurniture) => void;
+  addOverlayFromUrl: (url: string, opts?: { x?: number; y?: number; scale?: number; rotation?: number }) => void;
 }
 
 export const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(({ onObjectModified }, ref) => {
@@ -194,9 +195,58 @@ export const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(({ on
     });
   };
 
-  // Expose addFurnitureToCanvas to parent components
+  const addOverlayFromUrl = (url: string, opts?: { x?: number; y?: number; scale?: number; rotation?: number }) => {
+    if (!fabricCanvasRef.current) return;
+
+    fabric.Image.fromURL(url, (img: any) => {
+      if (!fabricCanvasRef.current) return;
+
+      const canvas = fabricCanvasRef.current;
+      const centerX = canvas.getWidth() / 2;
+      const centerY = canvas.getHeight() / 2;
+      
+      // Check if we have a detection for this category
+      const detectedCategory = state.detectedObjects[0]?.category;
+      const furnitureId = `overlay-${Date.now()}`;
+      
+      // Position based on detection or center
+      const x = opts?.x ?? (detectedCategory ? centerX : centerX);
+      const y = opts?.y ?? (detectedCategory ? centerY + 100 : centerY); // Slightly lower if detected
+      const scale = opts?.scale ?? 0.6;
+      const rotation = opts?.rotation ?? 0;
+
+      img.set({
+        left: x,
+        top: y,
+        scaleX: scale,
+        scaleY: scale,
+        angle: rotation,
+        originX: 'center',
+        originY: 'center',
+        hasControls: true,
+        hasBorders: true,
+        padding: 5,
+        cornerSize: 10,
+        transparentCorners: false,
+        borderColor: '#646cff',
+        cornerColor: '#646cff',
+        data: {
+          furnitureId,
+          imageUrl: url,
+          category: 'overlay',
+        },
+      });
+
+      canvas.add(img);
+      canvas.setActiveObject(img);
+      canvas.renderAll();
+    });
+  };
+
+  // Expose functions to parent components
   useImperativeHandle(ref, () => ({
     addFurnitureToCanvas,
+    addOverlayFromUrl,
   }));
 
   return (

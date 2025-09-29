@@ -6,6 +6,7 @@ interface RoomState {
   design: RoomDesign;
   detectedObjects: DetectionResult[];
   catalog: CatalogItem[];
+  selectedItem: CatalogItem | null;
   currentStep: number;
   isLoading: boolean;
   error: string | null;
@@ -15,6 +16,7 @@ type RoomAction =
   | { type: 'SET_BACKGROUND_PHOTO'; payload: string }
   | { type: 'SET_DETECTED_OBJECTS'; payload: DetectionResult[] }
   | { type: 'SET_CATALOG'; payload: CatalogItem[] }
+  | { type: 'SET_SELECTED_ITEM'; payload: CatalogItem | null }
   | { type: 'ADD_FURNITURE'; payload: PlacedFurniture }
   | { type: 'UPDATE_FURNITURE'; payload: { id: string; updates: Partial<PlacedFurniture> } }
   | { type: 'REMOVE_FURNITURE'; payload: string }
@@ -31,6 +33,7 @@ const initialState: RoomState = {
   },
   detectedObjects: [],
   catalog: [],
+  selectedItem: null,
   currentStep: 1,
   isLoading: false,
   error: null,
@@ -57,6 +60,11 @@ function roomReducer(state: RoomState, action: RoomAction): RoomState {
       return {
         ...state,
         catalog: action.payload,
+      };
+    case 'SET_SELECTED_ITEM':
+      return {
+        ...state,
+        selectedItem: action.payload,
       };
     case 'ADD_FURNITURE':
       return {
@@ -126,6 +134,7 @@ interface RoomContextType {
   reset: () => void;
   hasPhoto: boolean;
   room: RoomDesign;
+  setSelectedItem: (item: CatalogItem | null) => void;
 }
 
 const RoomContext = createContext<RoomContextType | undefined>(undefined);
@@ -175,6 +184,10 @@ export function RoomProvider({ children }: { children: ReactNode }) {
   const hasPhoto = !!state.design.backgroundPhoto;
   const room = state.design;
 
+  const setSelectedItem = (item: CatalogItem | null) => {
+    dispatch({ type: 'SET_SELECTED_ITEM', payload: item });
+  };
+
   return (
     <RoomContext.Provider value={{ 
       state, 
@@ -184,7 +197,8 @@ export function RoomProvider({ children }: { children: ReactNode }) {
       saveSession, 
       reset, 
       hasPhoto, 
-      room 
+      room,
+      setSelectedItem
     }}>
       {children}
     </RoomContext.Provider>

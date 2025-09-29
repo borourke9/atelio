@@ -6,6 +6,7 @@ import { UploadArea } from './components/UploadArea';
 import { CanvasEditor } from './components/CanvasEditor';
 import { CatalogSidebar } from './components/CatalogSidebar';
 import { FooterSteps } from './components/FooterSteps';
+import { GenerateModal } from './components/GenerateModal';
 import { useLoading } from './hooks/useLoading';
 import toast from 'react-hot-toast';
 import type { PlacedFurniture } from './types';
@@ -13,9 +14,10 @@ import type { PlacedFurniture } from './types';
 function AppContent() {
   const { state, dispatch, saveDesign } = useRoom();
   const { setLoading } = useLoading();
-  const canvasRef = useRef<{ addFurnitureToCanvas: (furniture: PlacedFurniture) => void }>(null);
+  const canvasRef = useRef<{ addFurnitureToCanvas: (furniture: PlacedFurniture) => void; addOverlayFromUrl: (url: string, opts?: { x?: number; y?: number; scale?: number; rotation?: number }) => void }>(null);
   const [isCatalogOpen, setIsCatalogOpen] = useState(true);
   const [showRestoreBanner, setShowRestoreBanner] = useState(false);
+  const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
 
   // Check for saved session on load
   useEffect(() => {
@@ -82,6 +84,21 @@ function AppContent() {
     }
   };
 
+  const handleGeneratePhoto = () => {
+    if (state.selectedItem) {
+      setIsGenerateModalOpen(true);
+    }
+  };
+
+  const handleGenerationComplete = () => {
+    if (state.selectedItem && canvasRef.current) {
+      // Add the selected furniture as an overlay
+      canvasRef.current.addOverlayFromUrl(state.selectedItem.imageUrl, { scale: 0.6 });
+      toast.success(`Generated room with ${state.selectedItem.name}!`);
+    }
+    setIsGenerateModalOpen(false);
+  };
+
   return (
     <div className="h-screen flex flex-col">
       {/* Restore Session Banner */}
@@ -112,6 +129,7 @@ function AppContent() {
       {/* Toolbar */}
       <Toolbar 
         onToggleCatalog={() => setIsCatalogOpen(!isCatalogOpen)}
+        onGeneratePhoto={handleGeneratePhoto}
       />
 
       {/* Main Content */}
@@ -182,6 +200,14 @@ function AppContent() {
           </div>
         </div>
       )}
+
+      {/* Generate Modal */}
+      <GenerateModal
+        isOpen={isGenerateModalOpen}
+        onClose={() => setIsGenerateModalOpen(false)}
+        selectedItem={state.selectedItem}
+        onComplete={handleGenerationComplete}
+      />
     </div>
   );
 }

@@ -12,7 +12,7 @@ interface CatalogSidebarProps {
 
 export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
   const { items, loading, error } = useCatalog();
-  const { hasPhoto, dispatch } = useRoom();
+  const { hasPhoto, state, setSelectedItem } = useRoom();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
@@ -50,38 +50,20 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
   }, [items]);
 
 
-  const handleFurnitureSelect = useCallback(async (item: CatalogItem) => {
-    try {
-      // Show loading toast
-      const loadingToast = toast.loading(`Swapping ${item.category}...`);
-
-      if (!hasPhoto) {
-        // If no room photo exists, use the furniture image as the background
-        dispatch({ type: 'SET_BACKGROUND_PHOTO', payload: item.imageUrl });
-        toast.success(`Created room with ${item.name}`, { id: loadingToast });
-      } else {
-        // If room photo exists, add furniture to the canvas
-        const newFurniture = {
-          id: `${item.id}-${Date.now()}`,
-          position: { x: 400, y: 300 },
-          scale: 0.5,
-          rotation: 0,
-          imageUrl: item.imageUrl,
-          category: item.category,
-        };
-        dispatch({ type: 'ADD_FURNITURE', payload: newFurniture });
-        toast.success(`Swap complete - We replaced your ${item.category}. You can fine-tune the position if you'd like.`, { id: loadingToast });
-      }
-
-      // Call the optional callback
-      if (onSelectFurniture) {
-        onSelectFurniture(item);
-      }
-    } catch (error) {
-      console.error('Failed to add furniture:', error);
-      toast.error('Failed to add furniture');
+  const handleFurnitureSelect = useCallback((item: CatalogItem) => {
+    if (!hasPhoto) {
+      toast.error('Please upload a room photo first');
+      return;
     }
-  }, [hasPhoto, dispatch, onSelectFurniture]);
+
+    // Select the item
+    setSelectedItem(item);
+    
+    // Call the optional callback
+    if (onSelectFurniture) {
+      onSelectFurniture(item);
+    }
+  }, [hasPhoto, setSelectedItem, onSelectFurniture]);
 
   return (
     <aside className="w-72 shrink-0 border-r bg-white">
@@ -138,12 +120,18 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
               <span className="ml-2 text-gray-600">Loading catalog...</span>
             </div>
           )}
-            {!loading && filteredItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleFurnitureSelect(item)}
-                className="w-full text-left bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:scale-[1.01] transition p-3 mb-3"
-              >
+            {!loading && filteredItems.map((item) => {
+              const isSelected = state.selectedItem?.id === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleFurnitureSelect(item)}
+                  className={`w-full text-left border rounded-xl shadow-sm hover:shadow-md hover:scale-[1.01] transition p-3 mb-3 ${
+                    isSelected
+                      ? 'bg-blue-50 border-blue-300 ring-2 ring-blue-200'
+                      : 'bg-white border-gray-200'
+                  }`}
+                >
               <div className="relative w-full pt-[66%] mb-2">
                 <img 
                   src={item.imageUrl} 
@@ -154,10 +142,11 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
                   }}
                 />
               </div>
-              <div className="font-medium text-gray-800">{item.name}</div>
-              <div className="text-xs text-gray-500 capitalize">{item.category}</div>
-            </button>
-          ))}
+                  <div className="font-medium text-gray-800">{item.name}</div>
+                  <div className="text-xs text-gray-500 capitalize">{item.category}</div>
+                </button>
+              );
+            })}
             {!loading && filteredItems.length === 0 && (
               <div className="m-3 p-3 text-sm text-gray-600 rounded-lg border">
                 {error ? "Could not load catalog." : "No catalog items found."}
