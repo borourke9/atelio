@@ -51,13 +51,16 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
 
 
   const handleFurnitureSelect = useCallback((item: CatalogItem) => {
-    if (!hasPhoto) {
-      toast.error('Please upload a room photo first');
-      return;
-    }
-
-    // Select the item
+    // Select the item (works even without photo for room generation)
     setSelectedItem(item);
+    
+    if (!hasPhoto) {
+      // If no photo, show message about generating a new room
+      toast.success(`Selected ${item.name}. Upload a room photo or click "Generate Photo" to create a new room!`);
+    } else {
+      // If photo exists, show message about replacement
+      toast.success(`Selected ${item.name}. Click "Generate Photo" to replace furniture in your room!`);
+    }
     
     // Call the optional callback
     if (onSelectFurniture) {
@@ -70,6 +73,7 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Furniture Catalog</h2>
+        <p className="text-sm text-gray-600 mb-4">Click furniture to generate new room images</p>
         
         {/* Search */}
         <div className="relative mb-4">

@@ -7,6 +7,7 @@ interface GenerateModalProps {
   onClose: () => void;
   selectedItem: CatalogItem | null;
   onComplete: () => void;
+  hasBackgroundPhoto?: boolean;
 }
 
 interface GenerationStep {
@@ -15,13 +16,23 @@ interface GenerationStep {
   duration: number;
 }
 
-const steps: GenerationStep[] = [
-  { id: 1, label: 'Analyzing room…', duration: 800 },
-  { id: 2, label: 'Removing old furniture…', duration: 1000 },
-  { id: 3, label: 'Placing new furniture…', duration: 800 },
-];
+const getSteps = (hasBackgroundPhoto: boolean): GenerationStep[] => {
+  if (hasBackgroundPhoto) {
+    return [
+      { id: 1, label: 'Analyzing room…', duration: 800 },
+      { id: 2, label: 'Removing old furniture…', duration: 1000 },
+      { id: 3, label: 'Placing new furniture…', duration: 800 },
+    ];
+  } else {
+    return [
+      { id: 1, label: 'Creating room layout…', duration: 800 },
+      { id: 2, label: 'Setting up lighting…', duration: 1000 },
+      { id: 3, label: 'Adding furniture…', duration: 800 },
+    ];
+  }
+};
 
-export function GenerateModal({ isOpen, onClose, selectedItem, onComplete }: GenerateModalProps) {
+export function GenerateModal({ isOpen, onClose, selectedItem, onComplete, hasBackgroundPhoto = false }: GenerateModalProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
@@ -36,6 +47,8 @@ export function GenerateModal({ isOpen, onClose, selectedItem, onComplete }: Gen
     setIsGenerating(true);
     setIsComplete(false);
     setCurrentStep(0);
+
+    const steps = getSteps(hasBackgroundPhoto);
 
     // Simulate the generation process
     for (let i = 0; i < steps.length; i++) {
@@ -61,6 +74,7 @@ export function GenerateModal({ isOpen, onClose, selectedItem, onComplete }: Gen
     }
   };
 
+  const steps = getSteps(hasBackgroundPhoto);
   const progress = isComplete ? 100 : ((currentStep + 1) / steps.length) * 100;
 
   if (!isOpen || !selectedItem) return null;
@@ -71,7 +85,7 @@ export function GenerateModal({ isOpen, onClose, selectedItem, onComplete }: Gen
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold text-gray-900">
-            {isComplete ? 'Generation Complete!' : 'Generating New Room'}
+            {isComplete ? 'Generation Complete!' : (hasBackgroundPhoto ? 'Replacing Furniture' : 'Generating New Room')}
           </h2>
           {!isGenerating && (
             <button

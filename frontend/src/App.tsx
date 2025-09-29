@@ -91,10 +91,16 @@ function AppContent() {
   };
 
   const handleGenerationComplete = () => {
-    if (state.selectedItem && canvasRef.current) {
-      // Add the selected furniture as an overlay
-      canvasRef.current.addOverlayFromUrl(state.selectedItem.imageUrl, { scale: 0.6 });
-      toast.success(`Generated room with ${state.selectedItem.name}!`);
+    if (state.selectedItem) {
+      if (state.design.backgroundPhoto && canvasRef.current) {
+        // If there's a background photo, add furniture as overlay
+        canvasRef.current.addOverlayFromUrl(state.selectedItem.imageUrl, { scale: 0.6 });
+        toast.success(`Added ${state.selectedItem.name} to your room!`);
+      } else {
+        // If no background photo, set the furniture as the background
+        dispatch({ type: 'SET_BACKGROUND_PHOTO', payload: state.selectedItem.imageUrl });
+        toast.success(`Generated new room with ${state.selectedItem.name}!`);
+      }
     }
     setIsGenerateModalOpen(false);
   };
@@ -207,6 +213,7 @@ function AppContent() {
         onClose={() => setIsGenerateModalOpen(false)}
         selectedItem={state.selectedItem}
         onComplete={handleGenerationComplete}
+        hasBackgroundPhoto={!!state.design.backgroundPhoto}
       />
     </div>
   );
