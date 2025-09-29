@@ -52,60 +52,16 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
   const detectedCategory = state.detectedObjects[0]?.category;
 
   const handleFurnitureSelect = useCallback(async (item: CatalogItem) => {
-    if (!hasPhoto) {
-      toast.error('Please upload a room photo first');
-      return;
-    }
-
     try {
       // Show loading toast
-      const loadingToast = toast.loading(`Replacing ${item.category}...`);
+      const loadingToast = toast.loading(`Adding ${item.name} to room...`);
 
-      // Check if we have a detection for this category
-      const hasMatchingDetection = detectedCategory === item.category;
-      
-      if (hasMatchingDetection) {
-        // Call swap API
-        const swapRequest = {
-          photo: state.design.backgroundPhoto,
-          category: item.category,
-          replacementImage: item.imageUrl,
-        };
-
-        try {
-          const response = await fetch('http://localhost:3001/swap-furniture', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(swapRequest),
-          });
-          
-          const data = await response.json();
-          
-          if (data.success && data.updatedPhoto) {
-            // Update the background photo with the swapped result
-            dispatch({ type: 'SET_BACKGROUND_PHOTO', payload: data.updatedPhoto });
-            toast.success(`Placed ${item.name}`, { id: loadingToast });
-          } else {
-            throw new Error(data.error || 'Swap failed');
-          }
-        } catch (apiError) {
-          console.error('Swap API error:', apiError);
-          // Fallback: just add the furniture to the canvas
-          const newFurniture = {
-            id: `${item.id}-${Date.now()}`,
-            position: { x: 400, y: 300 },
-            scale: 0.5,
-            rotation: 0,
-            imageUrl: item.imageUrl,
-            category: item.category,
-          };
-          dispatch({ type: 'ADD_FURNITURE', payload: newFurniture });
-          toast.success(`Placed ${item.name}`, { id: loadingToast });
-        }
+      if (!hasPhoto) {
+        // If no room photo exists, use the furniture image as the background
+        dispatch({ type: 'SET_BACKGROUND_PHOTO', payload: item.imageUrl });
+        toast.success(`Created room with ${item.name}`, { id: loadingToast });
       } else {
-        // No matching detection, add as overlay
+        // If room photo exists, add furniture to the canvas
         const newFurniture = {
           id: `${item.id}-${Date.now()}`,
           position: { x: 400, y: 300 },
@@ -115,7 +71,7 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
           category: item.category,
         };
         dispatch({ type: 'ADD_FURNITURE', payload: newFurniture });
-        toast.success(`Placed ${item.name}`, { id: loadingToast });
+        toast.success(`Added ${item.name} to room`, { id: loadingToast });
       }
 
       // Call the optional callback
@@ -123,10 +79,10 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
         onSelectFurniture(item);
       }
     } catch (error) {
-      console.error('Failed to place furniture:', error);
-      toast.error('Failed to place furniture');
+      console.error('Failed to add furniture:', error);
+      toast.error('Failed to add furniture');
     }
-  }, [hasPhoto, detectedCategory, state.design.backgroundPhoto, dispatch, onSelectFurniture]);
+  }, [hasPhoto, dispatch, onSelectFurniture]);
 
   return (
     <aside className="w-72 shrink-0 border-r bg-white">
@@ -174,24 +130,21 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
         </div>
       </div>
 
-      {/* Catalog Items */}
-      <div className="relative">
-        {!hasPhoto && (
-          <div className="absolute inset-0 z-10 bg-white/60 backdrop-blur-sm pointer-events-none rounded-lg" />
-        )}
-        <div className="overflow-y-auto h-[calc(100vh-160px)] pr-2">
+        {/* Catalog Items */}
+        <div className="relative">
+          <div className="overflow-y-auto h-[calc(100vh-160px)] pr-2">
           {loading && (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
               <span className="ml-2 text-gray-600">Loading catalog...</span>
             </div>
           )}
-          {!loading && filteredItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => hasPhoto && handleFurnitureSelect(item)}
-              className="w-full text-left bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:scale-[1.01] transition p-3 mb-3"
-            >
+            {!loading && filteredItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleFurnitureSelect(item)}
+                className="w-full text-left bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:scale-[1.01] transition p-3 mb-3"
+              >
               <div className="relative w-full pt-[66%] mb-2">
                 <img 
                   src={item.imageUrl} 
@@ -206,11 +159,11 @@ export function CatalogSidebar({ onSelectFurniture }: CatalogSidebarProps) {
               <div className="text-xs text-gray-500 capitalize">{item.category}</div>
             </button>
           ))}
-          {!loading && filteredItems.length === 0 && (
-            <div className="m-3 p-3 text-sm text-gray-600 rounded-lg border">
-              {error ? "Could not load catalog. Check /api/catalog or /shared/catalog.json." : "No catalog items found."}
-            </div>
-          )}
+            {!loading && filteredItems.length === 0 && (
+              <div className="m-3 p-3 text-sm text-gray-600 rounded-lg border">
+                {error ? "Could not load catalog." : "No catalog items found."}
+              </div>
+            )}
         </div>
       </div>
     </aside>

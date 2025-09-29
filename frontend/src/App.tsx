@@ -5,7 +5,6 @@ import { Toolbar } from './components/Toolbar';
 import { UploadArea } from './components/UploadArea';
 import { CanvasEditor } from './components/CanvasEditor';
 import { CatalogSidebar } from './components/CatalogSidebar';
-import { DetectedFurniture } from './components/DetectedFurniture';
 import { FooterSteps } from './components/FooterSteps';
 import { useLoading } from './hooks/useLoading';
 import toast from 'react-hot-toast';
@@ -37,41 +36,8 @@ function AppContent() {
       reader.onload = async (e) => {
         const result = e.target?.result as string;
         dispatch({ type: 'SET_BACKGROUND_PHOTO', payload: result });
-        
-        // Call backend API for AI detection
-        setLoading('detecting', true);
-        try {
-          const formData = new FormData();
-          formData.append('image', file);
-          
-          const response = await fetch('http://localhost:3001/detect-furniture', {
-            method: 'POST',
-            body: formData,
-          });
-          
-          const data = await response.json();
-          
-          if (data.success) {
-            dispatch({ type: 'SET_DETECTED_OBJECTS', payload: data.detections });
-            toast.success('Furniture detected successfully!');
-          } else {
-            throw new Error(data.error || 'Detection failed');
-          }
-        } catch (apiError) {
-          console.error('Detection API error:', apiError);
-          // Fallback to mock detection
-          const mockDetection = [
-            {
-              category: 'sofa',
-              confidence: 0.95,
-              boundingBox: { x: 100, y: 150, width: 300, height: 200 }
-            }
-          ];
-          dispatch({ type: 'SET_DETECTED_OBJECTS', payload: mockDetection });
-          toast.success('Furniture detected successfully!');
-        }
-        
-        setLoading('detecting', false);
+        toast.success('Room photo uploaded successfully!');
+        setLoading('uploading', false);
         dispatch({ type: 'SET_LOADING', payload: false });
       };
       reader.readAsDataURL(file);
@@ -155,28 +121,20 @@ function AppContent() {
           <CatalogSidebar />
         </div>
 
-        {/* Canvas Area */}
-        <div className="flex-1 p-8">
-          <div className="h-full space-y-4">
-            {/* Detected Furniture Panel */}
-            {state.detectedObjects.length > 0 && (
-              <DetectedFurniture
-                detections={state.detectedObjects}
-                catalog={state.catalog}
-              />
-            )}
-
-            {/* Canvas */}
-            {state.design.backgroundPhoto ? (
-              <CanvasEditor
-                ref={canvasRef}
-                onObjectModified={handleFurnitureUpdate}
-              />
-            ) : (
-              <UploadArea onUpload={handleFileUpload} />
-            )}
+          {/* Canvas Area */}
+          <div className="flex-1 p-8">
+            <div className="h-full">
+              {/* Canvas */}
+              {state.design.backgroundPhoto ? (
+                <CanvasEditor
+                  ref={canvasRef}
+                  onObjectModified={handleFurnitureUpdate}
+                />
+              ) : (
+                <UploadArea onUpload={handleFileUpload} />
+              )}
+            </div>
           </div>
-        </div>
       </div>
 
       {/* Footer Steps */}

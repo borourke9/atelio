@@ -5,37 +5,37 @@ import { useRoom } from '../context/RoomContext';
 const steps = [
   {
     id: 1,
-    title: 'Upload Room Photo',
-    description: 'Upload a photo of your room',
-    icon: Upload,
-  },
-  {
-    id: 2,
-    title: 'AI Detects Furniture',
-    description: 'Our AI identifies furniture in your photo',
-    icon: Search,
-  },
-  {
-    id: 3,
-    title: 'Choose Furniture to Replace',
-    description: 'Select new furniture from our catalog',
+    title: 'Choose Furniture',
+    description: 'Select furniture from our catalog',
     icon: MousePointer,
   },
   {
+    id: 2,
+    title: 'Create Room',
+    description: 'Click to generate a room with your furniture',
+    icon: Upload,
+  },
+  {
+    id: 3,
+    title: 'Add More Items',
+    description: 'Add additional furniture to your room',
+    icon: Search,
+  },
+  {
     id: 4,
-    title: 'See Instant Swap',
-    description: 'Watch your room transform instantly',
+    title: 'Customize & Save',
+    description: 'Drag, resize, and save your design',
     icon: CheckCircle,
   },
 ];
 
-type DesignState = 'idle' | 'photoUploaded' | 'detected' | 'furniturePlaced';
+type DesignState = 'idle' | 'roomCreated' | 'furnitureAdded' | 'customized';
 
 function getDesignState(state: any): DesignState {
   if (!state.design.backgroundPhoto) return 'idle';
-  if (state.detectedObjects.length === 0) return 'photoUploaded';
-  if (state.design.placedFurniture.length === 0) return 'detected';
-  return 'furniturePlaced';
+  if (state.design.placedFurniture.length === 0) return 'roomCreated';
+  if (state.design.placedFurniture.length === 1) return 'furnitureAdded';
+  return 'customized';
 }
 
 export function FooterSteps() {
@@ -50,13 +50,13 @@ export function FooterSteps() {
           <div className="flex items-center space-x-12">
             {steps.map((step, index) => {
               const Icon = step.icon;
-              const isActive = designState === 'idle' && step.id === 1 ||
-                              designState === 'photoUploaded' && step.id === 2 ||
-                              designState === 'detected' && step.id === 3 ||
-                              designState === 'furniturePlaced' && step.id === 4;
-              const isCompleted = (designState === 'photoUploaded' && step.id < 2) ||
-                                 (designState === 'detected' && step.id < 3) ||
-                                 (designState === 'furniturePlaced' && step.id < 4);
+                const isActive = designState === 'idle' && step.id === 1 ||
+                                designState === 'roomCreated' && step.id === 2 ||
+                                designState === 'furnitureAdded' && step.id === 3 ||
+                                designState === 'customized' && step.id === 4;
+                const isCompleted = (designState === 'roomCreated' && step.id < 2) ||
+                                   (designState === 'furnitureAdded' && step.id < 3) ||
+                                   (designState === 'customized' && step.id < 4);
               const isLast = index === steps.length - 1;
 
               return (
