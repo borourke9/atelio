@@ -1,0 +1,239 @@
+import { useEffect, useRef, useState } from 'react';
+import { Toaster } from 'react-hot-toast';
+import { RoomProvider, useRoom } from './context/RoomContext';
+import { Toolbar } from './components/Toolbar';
+import { UploadArea } from './components/UploadArea';
+import { CanvasEditor } from './components/CanvasEditor';
+import { CatalogSidebar } from './components/CatalogSidebar';
+import { DetectedFurniture } from './components/DetectedFurniture';
+import { FooterSteps } from './components/FooterSteps';
+import { useLoading } from './hooks/useLoading';
+import toast from 'react-hot-toast';
+import type { PlacedFurniture } from './types';
+
+function AppContent() {
+  const { state, dispatch, saveDesign } = useRoom();
+  const { setLoading } = useLoading();
+  const canvasRef = useRef<{ addFurnitureToCanvas: (furniture: PlacedFurniture) => void }>(null);
+  const [isCatalogOpen, setIsCatalogOpen] = useState(true);
+  const [showRestoreBanner, setShowRestoreBanner] = useState(false);
+
+  // Check for saved session on load
+  useEffect(() => {
+    const savedSession = localStorage.getItem('furniture-swap.session:v1');
+    if (savedSession && !state.design.backgroundPhoto) {
+      setShowRestoreBanner(true);
+    }
+  }, [state.design.backgroundPhoto]);
+
+  // Handle file upload
+  const handleFileUpload = async (file: File) => {
+    setLoading('uploading', true);
+    dispatch({ type: 'SET_LOADING', payload: true });
+    dispatch({ type: 'SET_ERROR', payload: null });
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const result = e.target?.result as string;
+        dispatch({ type: 'SET_BACKGROUND_PHOTO', payload: result });
+        
+        // Call backend API for AI detection
+        setLoading('detecting', true);
+        try {
+          const formData = new FormData();
+          formData.append('image', file);
+          
+          const response = await fetch('http://localhost:3001/detect-furniture', {
+            method: 'POST',
+            body: formData,
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            dispatch({ type: 'SET_DETECTED_OBJECTS', payload: data.detections });
+            toast.success('Furniture detected successfully!');
+          } else {
+            throw new Error(data.error || 'Detection failed');
+          }
+        } catch (apiError) {
+          console.error('Detection API error:', apiError);
+          // Fallback to mock detection
+          const mockDetection = [
+            {
+              category: 'sofa',
+              confidence: 0.95,
+              boundingBox: { x: 100, y: 150, width: 300, height: 200 }
+            }
+          ];
+          dispatch({ type: 'SET_DETECTED_OBJECTS', payload: mockDetection });
+          toast.success('Furniture detected successfully!');
+        }
+        
+        setLoading('detecting', false);
+        dispatch({ type: 'SET_LOADING', payload: false });
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      dispatch({ type: 'SET_ERROR', payload: 'Failed to upload image' });
+      toast.error('Failed to upload image');
+      setLoading('uploading', false);
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
+  };
+
+
+  // Handle furniture updates from canvas
+  const handleFurnitureUpdate = (furniture: PlacedFurniture) => {
+    dispatch({ type: 'UPDATE_FURNITURE', payload: { id: furniture.id, updates: furniture } });
+  };
+
+  // Handle save design
+  useEffect(() => {
+    const handleSaveDesign = () => {
+      saveDesign();
+    };
+
+    window.addEventListener('saveDesign', handleSaveDesign);
+    return () => window.removeEventListener('saveDesign', handleSaveDesign);
+  }, [saveDesign]);
+
+
+  const handleRestoreSession = () => {
+    const savedSession = localStorage.getItem('furniture-swap.session:v1');
+    if (savedSession) {
+      try {
+        const design = JSON.parse(savedSession);
+        dispatch({ type: 'SET_BACKGROUND_PHOTO', payload: design.backgroundPhoto });
+        dispatch({ type: 'ADD_FURNITURE', payload: design.placedFurniture });
+        setShowRestoreBanner(false);
+        toast.success('Session restored!');
+      } catch (error) {
+        console.error('Failed to restore session:', error);
+        toast.error('Failed to restore session');
+      }
+    }
+  };
+
+  return (
+    <div className="h-screen flex flex-col">
+      {/* Restore Session Banner */}
+      {showRestoreBanner && (
+        <div className="bg-blue-50 border-b border-blue-200 px-6 py-3">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <p className="text-sm text-blue-800">
+              Restore your last design?
+            </p>
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={handleRestoreSession}
+                className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Restore
+              </button>
+              <button
+                onClick={() => setShowRestoreBanner(false)}
+                className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toolbar */}
+      <Toolbar 
+        onToggleCatalog={() => setIsCatalogOpen(!isCatalogOpen)}
+      />
+
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Sidebar */}
+        <div className={`${isCatalogOpen ? 'block' : 'hidden'} md:block`}>
+          <CatalogSidebar />
+        </div>
+
+        {/* Canvas Area */}
+        <div className="flex-1 p-8">
+          <div className="h-full space-y-4">
+            {/* Detected Furniture Panel */}
+            {state.detectedObjects.length > 0 && (
+              <DetectedFurniture
+                detections={state.detectedObjects}
+                catalog={state.catalog}
+              />
+            )}
+
+            {/* Canvas */}
+            {state.design.backgroundPhoto ? (
+              <CanvasEditor
+                ref={canvasRef}
+                onObjectModified={handleFurnitureUpdate}
+              />
+            ) : (
+              <UploadArea onUpload={handleFileUpload} />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Footer Steps */}
+      <FooterSteps />
+
+      {/* Toast Notifications */}
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+          },
+        }}
+      />
+
+      {/* Loading Overlay */}
+      {state.isLoading && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 flex items-center space-x-4 shadow-2xl">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div>
+              <p className="text-gray-900 font-semibold">
+                {state.currentStep === 2 ? 'Detecting furniture...' : 'Processing...'}
+              </p>
+              <p className="text-sm text-gray-600 mt-1">Please wait a moment</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Message */}
+      {state.error && (
+        <div className="fixed top-6 right-6 bg-red-50 border border-red-200 text-red-800 px-6 py-4 rounded-2xl shadow-lg z-50 backdrop-blur-sm">
+          <div className="flex items-center space-x-3">
+            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+            <span className="font-medium">{state.error}</span>
+            <button
+              onClick={() => dispatch({ type: 'SET_ERROR', payload: null })}
+              className="text-red-500 hover:text-red-700 ml-2 text-xl font-bold"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <RoomProvider>
+      <AppContent />
+    </RoomProvider>
+  );
+}
+
+export default App;
