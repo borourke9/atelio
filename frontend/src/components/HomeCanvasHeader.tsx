@@ -17,7 +17,7 @@ export function HomeCanvasHeader() {
           </div>
           
           <h1 className="text-7xl font-black text-white mb-6 leading-tight tracking-tight animate-fade-in-up">
-            ATELIO.AI
+            ATELIO.AI ✨
           </h1>
           
           <p className="text-2xl text-white/80 mb-4 font-light max-w-4xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
