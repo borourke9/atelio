@@ -182,33 +182,64 @@ function AppContent() {
       <StepGuide currentStep={currentStep} />
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="mb-6">
-              <h3 className="text-2xl font-light tracking-wide mb-2">ATELIO.AI</h3>
-              <p className="text-slate-400 font-light">AI-Powered Interior Design</p>
-            </div>
-            
-            <div className="border-t border-slate-800 pt-8">
-              <p className="text-slate-500 text-sm font-light tracking-wide">
-                © 2025 NEXGEN Technologies. All rights reserved.
-              </p>
-              <p className="text-slate-600 text-xs mt-2 font-light">
-                This software and its contents are proprietary and confidential. 
-                Unauthorized reproduction, distribution, or modification is strictly prohibited.
-              </p>
-              <div className="mt-4 flex justify-center space-x-6 text-xs text-slate-500">
-                <span>Privacy Policy</span>
-                <span>•</span>
-                <span>Terms of Service</span>
-                <span>•</span>
-                <span>Legal Rights Reserved</span>
+        <footer className="bg-slate-900 text-white py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <div className="mb-6">
+                <h3 className="text-2xl font-light tracking-wide mb-2">ATELIO.AI</h3>
+                <p className="text-slate-400 font-light">AI-Powered Interior Design</p>
+              </div>
+              
+              {/* Custom Branding & Product Catalog Section */}
+              <div className="mb-8 p-6 bg-slate-800/50 rounded-2xl border border-slate-700/50">
+                <h4 className="text-xl font-light tracking-wide mb-4 text-slate-200">
+                  Custom Solutions for Your Business
+                </h4>
+                <div className="grid md:grid-cols-2 gap-6 text-left">
+                  <div className="space-y-3">
+                    <h5 className="text-lg font-light text-slate-300 mb-2">🎨 Custom Branding</h5>
+                    <p className="text-slate-400 text-sm font-light leading-relaxed">
+                      Transform ATELIO.AI to match your brand identity. We can customize colors, logos, 
+                      typography, and overall design to create a seamless experience that represents 
+                      your business perfectly.
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <h5 className="text-lg font-light text-slate-300 mb-2">🪑 Custom Product Catalog</h5>
+                    <p className="text-slate-400 text-sm font-light leading-relaxed">
+                      Integrate your complete furniture inventory. Upload your product images, 
+                      specifications, and pricing to create a personalized catalog that showcases 
+                      exactly what you offer to your customers.
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-6">
+                  <p className="text-slate-300 text-sm font-light">
+                    Ready to make ATELIO.AI your own? 
+                    <span className="text-blue-400 ml-1">Contact us for custom implementation</span>
+                  </p>
+                </div>
+              </div>
+              
+              <div className="border-t border-slate-800 pt-8">
+                <p className="text-slate-500 text-sm font-light tracking-wide">
+                  © 2025 NEXGEN Technologies. All rights reserved.
+                </p>
+                <p className="text-slate-600 text-xs mt-2 font-light">
+                  This software and its contents are proprietary and confidential. 
+                  Unauthorized reproduction, distribution, or modification is strictly prohibited.
+                </p>
+                <div className="mt-4 flex justify-center space-x-6 text-xs text-slate-500">
+                  <span>Privacy Policy</span>
+                  <span>•</span>
+                  <span>Terms of Service</span>
+                  <span>•</span>
+                  <span>Legal Rights Reserved</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </footer>
+        </footer>
 
       {/* Product Catalog Modal */}
       <ProductCatalogModal
