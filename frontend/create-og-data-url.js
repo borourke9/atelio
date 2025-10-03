@@ -48,3 +48,4 @@ console.log('✅ Open Graph data URL created:');
 console.log(dataUrl);
 console.log('\n📋 Copy this data URL and use it in your meta tags:');
 console.log(`<meta property="og:image" content="${dataUrl}">`);
+

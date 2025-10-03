@@ -18,3 +18,4 @@ const pngData = Buffer.from([
 fs.writeFileSync('./public/og-image.png', pngData);
 console.log('✅ Placeholder PNG created');
 console.log('💡 For production, use a proper image generation service or convert the SVG');
+

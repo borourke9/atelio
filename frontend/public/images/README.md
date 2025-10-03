@@ -26,3 +26,4 @@ For best results with iMessage and social media previews:
 - `og-image.svg` - Current SVG-based Open Graph image
 - `og-image.png` - Placeholder PNG image
 - `og-image.html` - HTML version for testing
+

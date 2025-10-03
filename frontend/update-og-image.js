@@ -49,3 +49,4 @@ fs.writeFileSync(indexPath, htmlContent);
 console.log('✅ Successfully updated Open Graph image!');
 console.log(`📸 New image URL: ${newImageUrl}`);
 console.log('🚀 Don\'t forget to commit and push your changes');
+

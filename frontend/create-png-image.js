@@ -18,3 +18,4 @@ const pngData = Buffer.from([
 fs.writeFileSync('./public/og-image.png', pngData);
 console.log('✅ PNG image created for iMessage compatibility');
 console.log('💡 For production, use a proper image generation service');
+
