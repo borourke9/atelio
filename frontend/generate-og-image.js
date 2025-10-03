@@ -1,0 +1,62 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Create a simple SVG-based Open Graph image
+const svgContent = `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Background Pattern -->
+  <circle cx="240" cy="126" r="60" fill="rgba(255,255,255,0.1)"/>
+  <circle cx="960" cy="504" r="40" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="480" cy="378" r="50" fill="rgba(255,255,255,0.08)"/>
+  
+  <!-- Badge -->
+  <rect x="450" y="80" width="300" height="50" rx="25" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+  <circle cx="470" cy="105" r="4" fill="#10b981"/>
+  <text x="485" y="115" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="500" fill="rgba(255,255,255,0.9)" text-transform="uppercase" letter-spacing="1px">AI-Powered Design Tool</text>
+  
+  <!-- Main Title -->
+  <text x="600" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="300" fill="white" text-anchor="middle" letter-spacing="-2px">ATELIO.AI</text>
+  
+  <!-- Subtitle -->
+  <text x="600" y="330" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="300" fill="rgba(255,255,255,0.8)" text-anchor="middle" letter-spacing="0.5px">AI-Powered Furniture Replacement</text>
+  
+  <!-- Description -->
+  <text x="600" y="380" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="300" fill="rgba(255,255,255,0.7)" text-anchor="middle" letter-spacing="0.3px">Transform any room with intelligent furniture placement</text>
+  <text x="600" y="410" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="300" fill="rgba(255,255,255,0.7)" text-anchor="middle" letter-spacing="0.3px">Upload your space, choose your style, and watch AI create the perfect design</text>
+  
+  <!-- Sparkles -->
+  <text x="180" y="150" font-size="24" fill="rgba(255,255,255,0.6)">✨</text>
+  <text x="960" y="200" font-size="24" fill="rgba(255,255,255,0.6)">✨</text>
+  <text x="300" y="500" font-size="24" fill="rgba(255,255,255,0.6)">✨</text>
+  <text x="900" y="450" font-size="24" fill="rgba(255,255,255,0.6)">✨</text>
+</svg>`;
+
+// Write the SVG file
+fs.writeFileSync(path.join(__dirname, 'public', 'og-image.svg'), svgContent);
+
+console.log('✅ Open Graph SVG image created successfully!');
+console.log('📁 File saved to: public/og-image.svg');
+console.log('🔗 You can convert this to PNG using an online SVG to PNG converter');
+console.log('🌐 Or use it directly as og-image.svg in your meta tags');
