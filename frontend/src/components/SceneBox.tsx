@@ -71,6 +71,36 @@ export function SceneBox({
     onSceneClick(region);
   }, [onSceneClick]);
 
+  const handleImageTouch = useCallback((e: React.TouchEvent<HTMLImageElement>) => {
+    if (!imageRef.current) return;
+    
+    // Prevent default touch behavior
+    e.preventDefault();
+    
+    const rect = imageRef.current.getBoundingClientRect();
+    const touch = e.touches[0];
+    
+    // Calculate relative position within the image
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    
+    // Set marker position for visual feedback
+    setClickMarker({ x, y });
+    
+    // Calculate normalized coordinates (0-1 range)
+    const normalizedX = x / rect.width;
+    const normalizedY = y / rect.height;
+    
+    // Create replace region with normalized coordinates
+    const region: ReplaceRegion = {
+      x: normalizedX,
+      y: normalizedY
+    };
+    
+    setReplaceRegion(region);
+    onSceneClick(region);
+  }, [onSceneClick]);
+
   const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -168,6 +198,7 @@ export function SceneBox({
                     isImageUpdating ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
                   }`}
                   onClick={handleImageClick}
+                  onTouchEnd={handleImageTouch}
                   key={imageKey} // Force re-render when image changes
                 />
               
@@ -178,7 +209,8 @@ export function SceneBox({
               {!clickMarker && (
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                   <div className="bg-black/70 text-white px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
-                    Click to place furniture
+                    <span className="hidden sm:inline">Click to place furniture</span>
+                    <span className="sm:hidden">Tap to place furniture</span>
                   </div>
                 </div>
               )}
