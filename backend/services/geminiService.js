@@ -1,6 +1,6 @@
 const dotenv = require("dotenv");
 const { GoogleGenAI } = require("@google/genai");
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
 
@@ -88,10 +88,10 @@ async function addMarkerToImage(imagePath, position, originalDimensions) {
   
   if (aspectRatio > 1) { // Landscape
     contentWidth = targetDimension;
-    contentHeight = targetDimension / aspectRatio;
+    contentHeight = Math.round(targetDimension / aspectRatio);
   } else { // Portrait or square
     contentHeight = targetDimension;
-    contentWidth = targetDimension * aspectRatio;
+    contentWidth = Math.round(targetDimension * aspectRatio);
   }
   
   const offsetX = (targetDimension - contentWidth) / 2;
@@ -100,8 +100,8 @@ async function addMarkerToImage(imagePath, position, originalDimensions) {
   const markerXInContent = (position.x / 100) * contentWidth;
   const markerYInContent = (position.y / 100) * contentHeight;
   
-  const finalMarkerX = offsetX + markerXInContent;
-  const finalMarkerY = offsetY + markerYInContent;
+  const finalMarkerX = Math.round(offsetX + markerXInContent);
+  const finalMarkerY = Math.round(offsetY + markerYInContent);
   
   const markerRadius = Math.max(5, Math.min(targetDimension, targetDimension) * 0.015);
   
