@@ -123,17 +123,15 @@ export function SceneBox({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
-            <p className="text-xl font-bold text-blue-600">Drop room photo here</p>
-            <p className="text-sm text-blue-500">PNG or JPG files only</p>
+            <p className="text-xl font-light text-blue-600 tracking-wide">Drop room photo here</p>
+            <p className="text-sm text-blue-500 font-light tracking-wide">PNG or JPG files only</p>
           </div>
         </div>
       )}
-      <div className="relative z-10 flex items-center justify-between mb-8">
-        <div>
-          <h3 className="text-2xl font-bold text-slate-800 mb-1">Scene</h3>
-          <p className="text-sm text-slate-600 font-medium">Upload your room photo</p>
-        </div>
-        <div className="flex items-center gap-3">
+      <div className="relative z-10 text-center mb-8">
+        <h3 className="text-2xl sm:text-3xl font-light text-slate-800 mb-2 tracking-wide">Your Scene</h3>
+        <p className="text-sm sm:text-base text-slate-600 font-light tracking-wide mb-4">Upload your room photo and click to place furniture</p>
+        <div className="flex items-center justify-center gap-3">
           <button
             onClick={onUndo}
             disabled={!canUndo}
@@ -243,16 +241,16 @@ export function SceneBox({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
-              <h4 className="text-2xl font-bold text-slate-800 mb-3">Upload Your Room</h4>
-              <p className="text-slate-600 mb-6 max-w-sm mx-auto leading-relaxed">
+              <h4 className="text-2xl font-light text-slate-800 mb-3 tracking-wide">Upload Your Room</h4>
+              <p className="text-slate-600 mb-6 max-w-sm mx-auto leading-relaxed font-light tracking-wide">
                 Choose a clear photo of your room to get started with AI-powered furniture placement
               </p>
-              <div className="flex items-center justify-center gap-2 text-sm text-slate-500 mb-8">
+              <div className="flex items-center justify-center gap-2 text-sm text-slate-500 mb-8 font-light tracking-wide">
                 <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
                 <span>Click the button below or drag & drop an image</span>
                 <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
               </div>
-              <label className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold rounded-full shadow-xl hover:shadow-2xl cursor-pointer transition-all duration-300 hover:scale-105">
+              <label className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-light rounded-full shadow-xl hover:shadow-2xl cursor-pointer transition-all duration-300 hover:scale-105 tracking-wide">
                 <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
@@ -275,7 +273,7 @@ export function SceneBox({
             <button
               onClick={onGenerateComposite}
               disabled={isGenerating}
-              className="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-5 px-8 rounded-full transition-all duration-300 hover:scale-105 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1"
+              className="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 disabled:from-gray-400 disabled:to-gray-500 text-white font-light py-5 px-8 rounded-full transition-all duration-300 hover:scale-105 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 tracking-wide"
             >
               <span className="flex items-center justify-center gap-3">
                 {isGenerating ? (

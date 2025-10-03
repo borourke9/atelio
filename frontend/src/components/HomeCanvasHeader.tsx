@@ -16,15 +16,15 @@ export function HomeCanvasHeader() {
             <span className="text-white/90 font-medium text-xs sm:text-sm tracking-wide uppercase">AI-Powered Design Tool</span>
           </div>
           
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-4 sm:mb-6 leading-tight tracking-tight animate-fade-in-up">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-white mb-4 sm:mb-6 leading-tight tracking-wide animate-fade-in-up">
             ATELIO.AI ✨
           </h1>
           
-          <p className="text-lg sm:text-xl lg:text-2xl text-white/80 mb-3 sm:mb-4 font-light max-w-4xl mx-auto leading-relaxed animate-fade-in-up px-4" style={{ animationDelay: '0.1s' }}>
+          <p className="text-lg sm:text-xl lg:text-2xl text-white/80 mb-3 sm:mb-4 font-light max-w-4xl mx-auto leading-relaxed animate-fade-in-up px-4 tracking-wide" style={{ animationDelay: '0.1s' }}>
             AI-powered furniture replacement for stunning interiors
           </p>
           
-          <p className="text-sm sm:text-base lg:text-lg text-white/60 max-w-2xl mx-auto leading-relaxed animate-fade-in-up px-4" style={{ animationDelay: '0.2s' }}>
+          <p className="text-sm sm:text-base lg:text-lg text-white/60 max-w-2xl mx-auto leading-relaxed animate-fade-in-up px-4 font-light tracking-wide" style={{ animationDelay: '0.2s' }}>
             Transform any room with intelligent furniture placement. Upload your space, choose your style, and watch AI create the perfect design.
           </p>
         </div>

@@ -62,14 +62,12 @@ export function ProductBox({ selectedProduct, onChangeProduct, onProductDrop }: 
           </div>
         </div>
       )}
-      <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
-        <div>
-          <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-1">Product</h3>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium">Choose your furniture piece</p>
-        </div>
+      <div className="relative z-10 text-center mb-6 sm:mb-8">
+        <h3 className="text-2xl sm:text-3xl font-light text-slate-800 mb-2 tracking-wide">Choose Your Product</h3>
+        <p className="text-sm sm:text-base text-slate-600 font-light tracking-wide">Select furniture from our curated collection</p>
         <button
           onClick={onChangeProduct}
-          className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base w-full sm:w-auto"
+          className="mt-4 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-light text-sm sm:text-base rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl tracking-wide"
         >
           Browse Catalog
         </button>
@@ -90,18 +88,18 @@ export function ProductBox({ selectedProduct, onChangeProduct, onProductDrop }: 
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-400/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </div>
             <div className="text-center">
-              <h4 className="font-bold text-slate-800 mb-3 text-xl">
+              <h4 className="font-light text-slate-800 mb-3 text-xl tracking-wide">
                 {droppedFile?.name || selectedProduct?.name}
               </h4>
               {selectedProduct?.dimensions && (
-                <p className="text-sm text-slate-600 mb-2 font-medium">{selectedProduct.dimensions}</p>
+                <p className="text-sm text-slate-600 mb-2 font-light tracking-wide">{selectedProduct.dimensions}</p>
               )}
               {droppedFile && (
-                <p className="text-sm text-slate-600 mb-3 font-medium">
+                <p className="text-sm text-slate-600 mb-3 font-light tracking-wide">
                   {(droppedFile.size / (1024 * 1024)).toFixed(1)} MB
                 </p>
               )}
-              <span className="inline-block px-4 py-2 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 text-sm font-semibold rounded-full capitalize border border-blue-200">
+              <span className="inline-block px-4 py-2 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 text-sm font-light rounded-full capitalize border border-blue-200 tracking-wide">
                 {selectedProduct?.category || 'uploaded'}
               </span>
             </div>
@@ -113,8 +111,8 @@ export function ProductBox({ selectedProduct, onChangeProduct, onProductDrop }: 
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
               </svg>
             </div>
-            <h4 className="text-xl font-semibold text-slate-700 mb-3">No Product Selected</h4>
-            <p className="text-slate-500 mb-4 max-w-xs mx-auto leading-relaxed">
+            <h4 className="text-xl font-light text-slate-700 mb-3 tracking-wide">No Product Selected</h4>
+            <p className="text-slate-500 mb-4 max-w-xs mx-auto leading-relaxed font-light tracking-wide">
               Choose from our catalog or drag & drop your own furniture image
             </p>
             <div className="flex items-center justify-center gap-2 text-xs text-slate-400">

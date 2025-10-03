@@ -56,10 +56,10 @@ export function StepGuide({ currentStep }: StepGuideProps) {
       }}></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8 sm:mb-12">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 sm:mb-4">How It Works</h2>
-          <p className="text-white/70 text-base sm:text-lg max-w-2xl mx-auto px-4">Follow these simple steps to create your perfect room design</p>
-        </div>
+           <div className="text-center mb-8 sm:mb-12">
+             <h2 className="text-2xl sm:text-3xl font-light text-white mb-3 sm:mb-4 tracking-wide">How It Works</h2>
+             <p className="text-white/70 text-base sm:text-lg max-w-2xl mx-auto px-4 font-light tracking-wide">Follow these simple steps to create your perfect room design</p>
+           </div>
         
         <div className="grid grid-cols-2 sm:flex sm:flex-row items-center justify-between gap-4 sm:gap-4">
           {steps.map((step, index) => {
@@ -96,26 +96,26 @@ export function StepGuide({ currentStep }: StepGuideProps) {
                     </div>
                   </div>
                   
-                  <div className="mt-3 sm:mt-4 lg:mt-6 text-center">
-                    <p className={`text-sm sm:text-base lg:text-lg font-bold mb-1 transition-colors duration-300 ${
-                      isActive 
-                        ? 'text-emerald-400' 
-                        : isCompleted 
-                          ? 'text-green-400' 
-                          : 'text-white/70 group-hover:text-white'
-                    }`}>
-                      {step.title}
-                    </p>
-                    <p className={`text-xs sm:text-sm leading-relaxed transition-colors duration-300 ${
-                      isActive 
-                        ? 'text-emerald-300' 
-                        : isCompleted 
-                          ? 'text-green-300' 
-                          : 'text-white/50 group-hover:text-white/70'
-                    }`}>
-                      {step.description}
-                    </p>
-                  </div>
+                     <div className="mt-3 sm:mt-4 lg:mt-6 text-center">
+                       <p className={`text-sm sm:text-base lg:text-lg font-light mb-1 transition-colors duration-300 tracking-wide ${
+                         isActive 
+                           ? 'text-emerald-400' 
+                           : isCompleted 
+                             ? 'text-green-400' 
+                             : 'text-white/70 group-hover:text-white'
+                       }`}>
+                         {step.title}
+                       </p>
+                       <p className={`text-xs sm:text-sm leading-relaxed transition-colors duration-300 font-light tracking-wide ${
+                         isActive 
+                           ? 'text-emerald-300' 
+                           : isCompleted 
+                             ? 'text-green-300' 
+                             : 'text-white/50 group-hover:text-white/70'
+                       }`}>
+                         {step.description}
+                       </p>
+                     </div>
                 </div>
                 
                 {index < steps.length - 1 && (
