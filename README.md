@@ -6,6 +6,8 @@
 
 Premium AI-powered room design application with real-time furniture placement and Google GenAI integration.
 
+🚀 **Latest Update**: TypeScript build errors fixed for Vercel deployment
+
 ✨ **Features:**
 - Premium Design Agency UI
 - Interactive Click-to-Place Furniture
