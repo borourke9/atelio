@@ -3,7 +3,7 @@ import type { CompositeRequest, CompositeResponse } from '../types';
 export class CompositeService {
   private baseUrl: string;
 
-  constructor(baseUrl: string = 'http://localhost:3001') {
+  constructor(baseUrl: string = 'http://100.69.95.6:3001') {
     this.baseUrl = baseUrl;
   }
 

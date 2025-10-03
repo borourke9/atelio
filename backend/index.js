@@ -58,10 +58,11 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📁 Serving static files from /shared and /assets`);
   console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+  console.log(`🌐 Mobile access: http://100.69.95.6:${PORT}/health`);
   console.log(`🤖 Using Google AI Images API for composite generation`);
 });
 
