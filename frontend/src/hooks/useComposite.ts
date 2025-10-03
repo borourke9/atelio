@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { compositeService } from '../services/compositeService';
-import type { CompositeRequest, CompositeResponse, ReplaceRegion } from '../types';
+import type { CompositeRequest, CompositeResponse } from '../types';
 
 interface UseCompositeReturn {
   generateComposite: (request: CompositeRequest) => Promise<CompositeResponse>;

@@ -53,7 +53,7 @@ export function RegionSelector({ imageUrl, onRegionSelect, onCancel, isVisible }
 
     // Only create region if it's large enough
     if (width > 20 && height > 20) {
-      onRegionSelect({ x, y, width, height });
+      onRegionSelect({ x, y });
     }
 
     setIsSelecting(false);

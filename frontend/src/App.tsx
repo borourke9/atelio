@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { RoomProvider, useRoom } from './context/RoomContext';
 import { HomeCanvasHeader } from './components/HomeCanvasHeader';
@@ -9,12 +9,12 @@ import { ProductCatalogModal } from './components/ProductCatalogModal';
 import { useComposite } from './hooks/useComposite';
 import { useHistory } from './hooks/useHistory';
 import toast from 'react-hot-toast';
-import type { PlacedFurniture, CatalogItem, ReplaceRegion } from './types';
+import type { CatalogItem, ReplaceRegion } from './types';
 
 function AppContent() {
-  const { state, dispatch, saveDesign } = useRoom();
+  const { } = useRoom();
   const { generateComposite, loading: compositeLoading } = useComposite();
-  const { addToHistory, undo, redo, canUndo, canRedo, getCurrentImage } = useHistory();
+  const { addToHistory, undo, redo, canUndo, canRedo } = useHistory();
   
   const [selectedProduct, setSelectedProduct] = useState<CatalogItem | null>(null);
   const [sceneImageUrl, setSceneImageUrl] = useState<string | null>(null);
@@ -54,7 +54,7 @@ function AppContent() {
       id: `uploaded-${Date.now()}`,
       name: file.name.replace(/\.[^/.]+$/, ""), // Remove file extension
       imageUrl: URL.createObjectURL(file),
-      category: 'uploaded',
+      category: 'sofa',
       dimensions: 'Custom',
       replacementHint: 'Custom uploaded product'
     };

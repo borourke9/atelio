@@ -123,7 +123,7 @@ export function ProductCatalogModal({ isOpen, onClose, onSelectProduct }: Produc
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
-              {filteredItems.map((item, index) => (
+              {filteredItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => handleProductSelect(item)}

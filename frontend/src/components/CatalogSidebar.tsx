@@ -16,7 +16,7 @@ interface CatalogSidebarProps {
   canvasRef?: React.RefObject<{ addFurnitureToCanvas: (furniture: any) => void; addOverlayFromUrl: (url: string, opts?: any) => void; setBackgroundFromUrl: (url: string) => void; startRegionSelection: () => void; undo: () => void; redo: () => void; canUndo: boolean; canRedo: boolean } | null>;
 }
 
-export function CatalogSidebar({ onSelectFurniture, onFurnitureSelect, selectedFurniture, canvasRef }: CatalogSidebarProps) {
+export function CatalogSidebar({ onSelectFurniture, onFurnitureSelect, canvasRef }: CatalogSidebarProps) {
   const { items, loading, error } = useCatalog();
   const { hasPhoto, state, setSelectedItem } = useRoom();
   const [searchTerm, setSearchTerm] = useState('');

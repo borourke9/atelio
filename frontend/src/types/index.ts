@@ -35,7 +35,7 @@ export interface CatalogItem {
   id: string;
   name: string;
   imageUrl: string;
-  category: "sofa" | "chair" | "table";
+  category: "sofa" | "chair" | "table" | "storage" | "lighting" | "uploaded";
   dimensions?: string;
   replacementHint?: string;
   semanticData?: SemanticData;

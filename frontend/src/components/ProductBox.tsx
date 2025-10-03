@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDragAndDrop } from '../hooks/useDragAndDrop';
 import toast from 'react-hot-toast';
 import type { CatalogItem } from '../types';

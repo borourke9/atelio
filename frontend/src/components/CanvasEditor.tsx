@@ -29,11 +29,11 @@ export const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(({ on
   const fabricCanvasRef = useRef<any>(null);
   const { state } = useRoom();
   const { loading, setLoading } = useLoading();
-  const { generateComposite, loading: compositeLoading } = useComposite();
-  const { addToHistory, undo, redo, canUndo, canRedo, getCurrentImage } = useHistory();
+  const { generateComposite } = useComposite();
+  const { addToHistory, undo, redo, canUndo, canRedo } = useHistory();
   const [isCanvasReady, setIsCanvasReady] = useState(false);
   const [showRegionSelector, setShowRegionSelector] = useState(false);
-  const [currentImageUrl, setCurrentImageUrl] = useState<string | null>(null);
+  // const [currentImageUrl, setCurrentImageUrl] = useState<string | null>(null);
 
   // Initialize Fabric.js canvas
   useEffect(() => {
@@ -304,7 +304,7 @@ export const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(({ on
       
       // Add to history
       addToHistory(url);
-      setCurrentImageUrl(url);
+      // setCurrentImageUrl(url);
     });
   };
 
