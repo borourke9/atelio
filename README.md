@@ -15,7 +15,7 @@ Premium AI-powered room design application with real-time furniture placement an
 - Product Catalog with Search
 - Modern Responsive Design
 
-View your app in AI Studio: https://ai.studio/apps/drive/1CqXuGeO-e-sxSv-cT9WKBd8Buu6aQh3g
+🚀 **Live Demo**: Deploy with Vercel using the `atelio` repository
 
 ## Run Locally
 
