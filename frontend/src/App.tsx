@@ -128,10 +128,10 @@ function AppContent() {
       <HomeCanvasHeader />
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 h-[700px]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 min-h-[500px] lg:h-[700px]">
           {/* Product Box */}
-          <div className="animate-fade-in-up">
+          <div className="animate-fade-in-up order-2 lg:order-1">
           <ProductBox
             selectedProduct={selectedProduct}
             onChangeProduct={() => {
@@ -143,7 +143,7 @@ function AppContent() {
           </div>
 
           {/* Scene Box */}
-          <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          <div className="animate-fade-in-up order-1 lg:order-2" style={{ animationDelay: '0.1s' }}>
             <SceneBox
               sceneImageUrl={sceneImageUrl}
               onSceneUpload={handleSceneUpload}
@@ -161,16 +161,17 @@ function AppContent() {
 
         {/* Save Design Button */}
         {sceneImageUrl && (
-          <div className="mt-12 text-center animate-fade-in">
+          <div className="mt-8 sm:mt-12 text-center animate-fade-in px-4">
             <button
               onClick={handleSaveDesign}
-              className="px-12 py-5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 text-white font-bold text-lg rounded-full transition-all duration-300 hover:scale-105 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1"
+              className="px-6 sm:px-12 py-3 sm:py-5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 text-white font-bold text-base sm:text-lg rounded-full transition-all duration-300 hover:scale-105 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 w-full sm:w-auto"
             >
-              <span className="flex items-center gap-3">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <span className="flex items-center justify-center gap-2 sm:gap-3">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
                 </svg>
-                Save Your Design
+                <span className="hidden sm:inline">Save Your Design</span>
+                <span className="sm:hidden">Save Design</span>
               </span>
             </button>
           </div>

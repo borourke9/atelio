@@ -33,7 +33,7 @@ export function ProductBox({ selectedProduct, onChangeProduct, onProductDrop }: 
 
   return (
     <div 
-      className={`bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-10 h-full transition-all duration-500 relative overflow-hidden group ${
+      className={`bg-white/70 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white/20 p-4 sm:p-6 lg:p-10 h-full transition-all duration-500 relative overflow-hidden group ${
         isDragOver 
           ? 'border-blue-400 border-dashed bg-blue-50/80 shadow-3xl scale-105' 
           : 'hover:shadow-3xl hover:scale-105 hover:bg-white/80'
@@ -62,14 +62,14 @@ export function ProductBox({ selectedProduct, onChangeProduct, onProductDrop }: 
           </div>
         </div>
       )}
-      <div className="relative z-10 flex items-center justify-between mb-8">
+      <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
         <div>
-          <h3 className="text-2xl font-bold text-slate-800 mb-1">Product</h3>
-          <p className="text-sm text-slate-600 font-medium">Choose your furniture piece</p>
+          <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-1">Product</h3>
+          <p className="text-xs sm:text-sm text-slate-600 font-medium">Choose your furniture piece</p>
         </div>
         <button
           onClick={onChangeProduct}
-          className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+          className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base w-full sm:w-auto"
         >
           Browse Catalog
         </button>
