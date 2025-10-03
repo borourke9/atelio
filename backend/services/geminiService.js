@@ -1,8 +1,10 @@
 const dotenv = require("dotenv");
 const { GoogleGenAI } = require("@google/genai");
-const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
+
+// Dynamic import for node-fetch
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 dotenv.config();
 
