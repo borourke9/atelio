@@ -1,6 +1,6 @@
 const dotenv = require("dotenv");
 const { GoogleGenAI } = require("@google/genai");
-const fetch = require('node-fetch');
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const fs = require('fs');
 const path = require('path');
 
@@ -237,27 +237,20 @@ Output Requirements:
 
     console.log("🤖 Calling Gemini API...");
     
-    const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
-    
-    const response = await model.generateContent([
-      {
-        inlineData: {
-          mimeType: 'image/jpeg',
-          data: productBase64
-        }
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-image-preview',
+      contents: { 
+        parts: [
+          { inlineData: { mimeType: 'image/jpeg', data: productBase64 } },
+          { inlineData: { mimeType: 'image/jpeg', data: sceneBase64 } },
+          { text: prompt }
+        ] 
       },
-      {
-        inlineData: {
-          mimeType: 'image/jpeg', 
-          data: sceneBase64
-        }
-      },
-      prompt
-    ]);
+    });
 
     console.log("📡 Received response from Gemini API");
     
-    const imagePart = response.response?.candidates?.[0]?.content?.parts?.find(part => part.inlineData);
+    const imagePart = response.candidates?.[0]?.content?.parts?.find(part => part.inlineData);
     
     if (imagePart?.inlineData) {
       const { mimeType, data } = imagePart.inlineData;
