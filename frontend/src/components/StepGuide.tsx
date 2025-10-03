@@ -49,7 +49,7 @@ export function StepGuide({ currentStep }: StepGuideProps) {
   ];
 
   return (
-    <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 py-12 sm:py-16 relative overflow-hidden">
+    <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 py-8 sm:py-12 lg:py-16 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-30" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='20' cy='20' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
@@ -61,16 +61,16 @@ export function StepGuide({ currentStep }: StepGuideProps) {
           <p className="text-white/70 text-base sm:text-lg max-w-2xl mx-auto px-4">Follow these simple steps to create your perfect room design</p>
         </div>
         
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-8 sm:gap-4">
+        <div className="grid grid-cols-2 sm:flex sm:flex-row items-center justify-between gap-4 sm:gap-4">
           {steps.map((step, index) => {
             const isActive = currentStep === step.number;
             const isCompleted = currentStep > step.number;
             
             return (
-              <div key={step.number} className="flex items-center">
+              <div key={step.number} className="flex flex-col sm:flex-row items-center">
                 <div className="flex flex-col items-center group">
                   <div className={`
-                    w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl flex items-center justify-center text-lg font-bold transition-all duration-500 shadow-2xl relative overflow-hidden
+                    w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-xl sm:rounded-2xl lg:rounded-3xl flex items-center justify-center text-sm sm:text-lg font-bold transition-all duration-500 shadow-2xl relative overflow-hidden
                     ${isActive 
                       ? 'bg-gradient-to-br from-emerald-400 to-cyan-500 text-white scale-110 shadow-emerald-500/50' 
                       : isCompleted 
@@ -85,7 +85,7 @@ export function StepGuide({ currentStep }: StepGuideProps) {
                     
                     <div className="relative z-10">
                       {isCompleted ? (
-                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                         </svg>
                       ) : (
@@ -96,8 +96,8 @@ export function StepGuide({ currentStep }: StepGuideProps) {
                     </div>
                   </div>
                   
-                  <div className="mt-4 sm:mt-6 text-center">
-                    <p className={`text-base sm:text-lg font-bold mb-1 sm:mb-2 transition-colors duration-300 ${
+                  <div className="mt-3 sm:mt-4 lg:mt-6 text-center">
+                    <p className={`text-sm sm:text-base lg:text-lg font-bold mb-1 transition-colors duration-300 ${
                       isActive 
                         ? 'text-emerald-400' 
                         : isCompleted 
@@ -106,7 +106,7 @@ export function StepGuide({ currentStep }: StepGuideProps) {
                     }`}>
                       {step.title}
                     </p>
-                    <p className={`text-xs sm:text-sm max-w-24 sm:max-w-32 leading-relaxed transition-colors duration-300 ${
+                    <p className={`text-xs sm:text-sm leading-relaxed transition-colors duration-300 ${
                       isActive 
                         ? 'text-emerald-300' 
                         : isCompleted 
@@ -119,8 +119,8 @@ export function StepGuide({ currentStep }: StepGuideProps) {
                 </div>
                 
                 {index < steps.length - 1 && (
-                  <div className="relative mx-4 sm:mx-8">
-                    <div className={`w-16 sm:w-32 h-1 rounded-full transition-all duration-500 ${
+                  <div className="hidden sm:block relative mx-4 lg:mx-8">
+                    <div className={`w-16 lg:w-32 h-1 rounded-full transition-all duration-500 ${
                       isCompleted 
                         ? 'bg-gradient-to-r from-green-500 to-emerald-400' 
                         : 'bg-white/20'

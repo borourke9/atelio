@@ -131,7 +131,7 @@ function AppContent() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 min-h-[500px] lg:h-[700px]">
           {/* Product Box */}
-          <div className="animate-fade-in-up order-2 lg:order-1">
+          <div className="animate-fade-in-up order-1 lg:order-1">
           <ProductBox
             selectedProduct={selectedProduct}
             onChangeProduct={() => {
@@ -143,7 +143,7 @@ function AppContent() {
           </div>
 
           {/* Scene Box */}
-          <div className="animate-fade-in-up order-1 lg:order-2" style={{ animationDelay: '0.1s' }}>
+          <div className="animate-fade-in-up order-2 lg:order-2" style={{ animationDelay: '0.1s' }}>
             <SceneBox
               sceneImageUrl={sceneImageUrl}
               onSceneUpload={handleSceneUpload}
