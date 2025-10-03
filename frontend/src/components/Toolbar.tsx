@@ -5,124 +5,83 @@ import { useState } from 'react';
 interface ToolbarProps {
   onToggleCatalog?: () => void;
   onGeneratePhoto?: () => void;
+  onUndo?: () => void;
+  onRedo?: () => void;
+  canUndo?: boolean;
+  canRedo?: boolean;
 }
 
-export function Toolbar({ onToggleCatalog, onGeneratePhoto }: ToolbarProps) {
+export function Toolbar({ onToggleCatalog, onGeneratePhoto, onUndo, onRedo, canUndo, canRedo }: ToolbarProps) {
   const { saveSession, reset, hasPhoto, state } = useRoom();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="backdrop-blur-md bg-white/70 shadow-sm border-b border-white/20 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          {/* Left: Logo + Status */}
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">FS</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900">Furniture Swap</h1>
-                <p className="text-sm text-gray-600">AI-Powered Room Design</p>
-              </div>
-            </div>
-            
-            {/* Status Indicator */}
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium text-gray-700">Ready</span>
-            </div>
+    <header className="sticky top-0 z-30 bg-white/70 backdrop-blur-xs border-b border-sand-200">
+      <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="h-9 w-9 rounded-xl bg-sand-200 text-stoneink grid place-items-center shadow-soft">FS</div>
+          <div>
+            <h1 className="font-display text-xl text-stoneink tracking-tight">Furniture Swap</h1>
+            <p className="text-xs text-sand-700 -mt-0.5">AI-Powered Room Design</p>
           </div>
+          <span className="ml-3 inline-flex items-center gap-1 pill bg-blush/60 text-sand-800">
+            <span className="h-2 w-2 rounded-full bg-green-500"></span> Ready
+          </span>
+        </div>
 
-            {/* Desktop Action Buttons */}
-            <div className="hidden md:flex items-center gap-2">
-              <button
-                onClick={reset}
-                className="px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                aria-label="Start new room design"
-              >
-                + New Room
-              </button>
-              
-              <button
-                onClick={onGeneratePhoto}
-                disabled={!state.selectedItem}
-                className="px-4 py-2 rounded-full bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                aria-label="Generate new room photo"
-              >
-                Generate Photo
-              </button>
-              
-              <button
-                onClick={saveSession}
-                disabled={!hasPhoto}
-                className="px-4 py-2 rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 disabled:opacity-50 transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                aria-label="Save current room design"
-              >
-                Save My Room
-              </button>
-            </div>
+        <div className="flex items-center gap-2">
+          <button className="btn-secondary focus-ring" onClick={reset}>+ New Room</button>
+          <button 
+            className="btn-secondary focus-ring disabled:opacity-50" 
+            disabled={!canUndo} 
+            onClick={onUndo}
+            title="Undo"
+          >
+            ↶
+          </button>
+          <button 
+            className="btn-secondary focus-ring disabled:opacity-50" 
+            disabled={!canRedo} 
+            onClick={onRedo}
+            title="Redo"
+          >
+            ↷
+          </button>
+          <button className="btn-primary focus-ring disabled:opacity-50" disabled={!state.selectedItem} onClick={onGeneratePhoto}>Generate Photo</button>
+          <button className="btn-secondary focus-ring disabled:opacity-50" disabled={!hasPhoto} onClick={saveSession}>Save My Room</button>
+        </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center space-x-2">
-            {onToggleCatalog && (
-              <button
-                onClick={onToggleCatalog}
-                className="p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                aria-label="Toggle catalog"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
-            )}
+        {/* Mobile Menu Button */}
+        <div className="md:hidden flex items-center space-x-2">
+          {onToggleCatalog && (
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              aria-label="Toggle menu"
+              onClick={onToggleCatalog}
+              className="p-2 bg-sand-100 hover:bg-sand-200 text-sand-700 rounded-xl focus-ring"
+              aria-label="Toggle catalog"
             >
               <Menu className="w-5 h-5" />
             </button>
+          )}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 bg-sand-100 hover:bg-sand-200 text-sand-700 rounded-xl focus-ring"
+            aria-label="Toggle menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden mt-4 pt-4 border-t border-sand-200">
+          <div className="flex flex-col space-y-2">
+            <button className="btn-secondary focus-ring" onClick={() => { reset(); setIsMobileMenuOpen(false); }}>+ New Room</button>
+            <button className="btn-primary focus-ring disabled:opacity-50" disabled={!state.selectedItem} onClick={() => { onGeneratePhoto?.(); setIsMobileMenuOpen(false); }}>Generate Photo</button>
+            <button className="btn-secondary focus-ring disabled:opacity-50" disabled={!hasPhoto} onClick={() => { saveSession(); setIsMobileMenuOpen(false); }}>Save My Room</button>
           </div>
         </div>
-
-          {/* Mobile Menu */}
-          {isMobileMenuOpen && (
-            <div className="md:hidden mt-4 pt-4 border-t border-white/20">
-              <div className="flex flex-col space-y-2">
-                <button
-                  onClick={() => {
-                    reset();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  + New Room
-                </button>
-                
-                <button
-                  onClick={() => {
-                    onGeneratePhoto?.();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  disabled={!state.selectedItem}
-                  className="px-4 py-2 rounded-full bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  Generate Photo
-                </button>
-                
-                <button
-                  onClick={() => {
-                    saveSession();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  disabled={!hasPhoto}
-                  className="px-4 py-2 rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 disabled:opacity-50 transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  Save My Room
-                </button>
-              </div>
-            </div>
-          )}
-      </div>
+      )}
     </header>
   );
 }

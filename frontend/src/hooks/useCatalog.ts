@@ -13,39 +13,68 @@ export function useCatalog(): UseCatalogReturn {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Use hardcoded catalog data instead of API calls
+    // Use hardcoded catalog data with semantic metadata
     const catalogData: CatalogItem[] = [
       {
         id: "modern-gray-sofa",
         name: "Modern Gray Sofa",
-        imageUrl: "/images/modern-gray-sofa.jpg",
+        imageUrl: "https://res.cloudinary.com/dr1uz5pka/image/upload/v1759192370/sofagray_w4tskg.png",
         category: "sofa",
         dimensions: "84x36",
-        replacementHint: "Replace existing sofa in the photo"
+        replacementHint: "Replace existing sofa in the photo",
+        semanticData: {
+          style: "modern",
+          color: "gray",
+          material: "fabric",
+          shape: "rectangular",
+          features: ["armrests", "cushions", "upholstered"],
+          roomType: "living room",
+          placement: "against wall",
+          lighting: "natural",
+          perspective: "front view",
+          background: "neutral",
+          aiPrompt: "A modern gray fabric sofa with clean lines, soft cushions, and armrests. The sofa has a contemporary design with neutral gray upholstery. It should be placed naturally in a living room setting with proper lighting and perspective."
+        }
       },
       {
-        id: "modern-floor-sofa-orange",
-        name: "Modern Floor Sofa (Orange)",
-        imageUrl: "/images/modern-floor-sofa-orange.jpg",
-        category: "sofa",
-        dimensions: "12x60",
-        replacementHint: "Replace existing sofa in the photo"
-      },
-      {
-        id: "eames-style-chair",
-        name: "Eames Style Chair",
-        imageUrl: "/images/eames-style-chair.jpg",
+        id: "contemporary-chair",
+        name: "Contemporary Accent Chair",
+        imageUrl: "https://res.cloudinary.com/dr1uz5pka/image/upload/v1759192370/sofagray_w4tskg.png",
         category: "chair",
-        dimensions: "24x32",
+        dimensions: "32x32",
         replacementHint: "Replace existing chair in the photo"
       },
       {
-        id: "glass-coffee-table",
+        id: "coffee-table",
         name: "Glass Coffee Table",
-        imageUrl: "/images/glass-coffee-table.jpg",
+        imageUrl: "https://res.cloudinary.com/dr1uz5pka/image/upload/v1759192370/sofagray_w4tskg.png",
         category: "table",
-        dimensions: "36x24",
+        dimensions: "48x24",
         replacementHint: "Replace existing coffee table in the photo"
+      },
+      {
+        id: "dining-table",
+        name: "Modern Dining Table",
+        imageUrl: "https://res.cloudinary.com/dr1uz5pka/image/upload/v1759192370/sofagray_w4tskg.png",
+        category: "table",
+        dimensions: "72x36",
+        replacementHint: "Replace existing dining table in the photo"
+      },
+      {
+        id: "bookshelf",
+        name: "Wooden Bookshelf",
+        imageUrl: "https://res.cloudinary.com/dr1uz5pka/image/upload/v1759192370/sofagray_w4tskg.png",
+        category: "storage",
+        dimensions: "36x12",
+        replacementHint: "Replace existing bookshelf in the photo"
+      },
+      {
+        id: "lamp",
+        name: "Modern Floor Lamp",
+        imageUrl: "https://res.cloudinary.com/dr1uz5pka/image/upload/v1759192370/sofagray_w4tskg.png",
+        category: "lighting",
+        dimensions: "60x12",
+        replacementHint: "Replace existing lamp in the photo"
       }
     ];
 

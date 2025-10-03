@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Upload, Image as ImageIcon } from 'lucide-react';
+// import { Upload, Image as ImageIcon } from 'lucide-react';
 import { useRoom } from '../context/RoomContext';
 import { useLoading } from '../hooks/useLoading';
 
@@ -80,46 +80,34 @@ export function UploadArea({ onUpload }: UploadAreaProps) {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="absolute inset-0 flex flex-col items-center justify-center p-12">
-        <div className="text-center max-w-md">
-          {loading.uploading ? (
-            <div className="animate-pulse">
-              <div className="mx-auto w-20 h-20 bg-gray-200 rounded-2xl mb-6"></div>
-              <div className="h-8 bg-gray-200 rounded-lg mb-3"></div>
-              <div className="h-4 bg-gray-200 rounded-lg mb-6"></div>
-              <div className="h-12 bg-gray-200 rounded-2xl"></div>
-            </div>
-          ) : (
-            <>
-              <div className="mx-auto w-20 h-20 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
-                <ImageIcon className="w-10 h-10 text-blue-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                Upload Room Photo
-              </h3>
-              <p className="text-gray-600 mb-6 text-lg leading-relaxed">
-                Upload a photo, then choose a replacement. Our AI will swap it automatically.
-              </p>
-              <button
-                onClick={() => {
-                  const input = document.createElement('input');
-                  input.type = 'file';
-                  input.accept = 'image/*';
-                  input.addEventListener('change', handleFileSelect);
-                  input.click();
-                }}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                aria-label="Choose room photo"
-              >
-                <Upload className="w-5 h-5" />
-                Choose Photo
-              </button>
-              <p className="text-sm text-gray-500 mt-4 font-medium">
-                Supports JPG, PNG, and other image formats
-              </p>
-            </>
-          )}
-        </div>
+      <div className="grid place-items-center text-center py-16">
+        {loading.uploading ? (
+          <div className="animate-pulse">
+            <div className="mx-auto w-20 h-20 bg-sand-200 rounded-2xl mb-6"></div>
+            <div className="h-8 bg-sand-200 rounded-lg mb-3"></div>
+            <div className="h-4 bg-sand-200 rounded-lg mb-6"></div>
+            <div className="h-12 bg-sand-200 rounded-2xl"></div>
+          </div>
+        ) : (
+          <>
+            <div className="h-14 w-14 rounded-2xl bg-sand-100 grid place-items-center shadow-inset mb-4">🖼️</div>
+            <h3 className="font-display text-2xl text-stoneink">Upload Room Photo</h3>
+            <p className="text-sand-700 mt-1 max-w-md">Upload a photo, then choose a replacement. Our AI will swap it automatically.</p>
+            <button 
+              className="btn-primary focus-ring mt-5" 
+              onClick={() => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.addEventListener('change', handleFileSelect);
+                input.click();
+              }}
+            >
+              Choose Photo
+            </button>
+            <div className="text-xs text-sand-700 mt-2">Supports JPG, PNG</div>
+          </>
+        )}
       </div>
     </div>
   );

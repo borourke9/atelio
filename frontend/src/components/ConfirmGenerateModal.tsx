@@ -49,14 +49,14 @@ export function ConfirmGenerateModal({ open, onClose, item, onConfirm }: Confirm
         </div>
 
         {/* Confirmation Text */}
-        <div className="mb-6">
-          <p className="text-gray-700 mb-2">
-            Generate photo using <span className="font-semibold">{item.name}</span>?
-          </p>
-          <p className="text-sm text-gray-600">
-            We'll auto-detect and replace the existing {item.category}. No manual selection needed.
-          </p>
-        </div>
+          <div className="mb-6">
+            <p className="text-gray-700 mb-2">
+              Add <span className="font-semibold">{item.name}</span> to your room?
+            </p>
+            <p className="text-sm text-gray-600">
+              We'll place your exact {item.category} in the room. You can then drag, resize, and rotate it to fit perfectly.
+            </p>
+          </div>
 
         {/* Action Buttons */}
         <div className="flex justify-end space-x-3">
@@ -66,12 +66,12 @@ export function ConfirmGenerateModal({ open, onClose, item, onConfirm }: Confirm
           >
             Cancel
           </button>
-          <button
-            onClick={onConfirm}
-            className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
-          >
-            Generate
-          </button>
+            <button
+              onClick={onConfirm}
+              className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+            >
+              Add to Room
+            </button>
         </div>
       </div>
     </div>

@@ -1,228 +1,202 @@
 import { useEffect, useRef, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { RoomProvider, useRoom } from './context/RoomContext';
-import { Toolbar } from './components/Toolbar';
-import { UploadArea } from './components/UploadArea';
-import { CanvasEditor } from './components/CanvasEditor';
-import { CatalogSidebar } from './components/CatalogSidebar';
-import { FooterSteps } from './components/FooterSteps';
-import { GenerateModal } from './components/GenerateModal';
-import { useLoading } from './hooks/useLoading';
+import { HomeCanvasHeader } from './components/HomeCanvasHeader';
+import { ProductBox } from './components/ProductBox';
+import { SceneBox } from './components/SceneBox';
+import { StepGuide } from './components/StepGuide';
+import { ProductCatalogModal } from './components/ProductCatalogModal';
+import { useComposite } from './hooks/useComposite';
+import { useHistory } from './hooks/useHistory';
 import toast from 'react-hot-toast';
-import type { PlacedFurniture } from './types';
+import type { PlacedFurniture, CatalogItem, ReplaceRegion } from './types';
 
 function AppContent() {
   const { state, dispatch, saveDesign } = useRoom();
-  const { setLoading } = useLoading();
-  const canvasRef = useRef<{ addFurnitureToCanvas: (furniture: PlacedFurniture) => void; addOverlayFromUrl: (url: string, opts?: { x?: number; y?: number; scale?: number; rotation?: number }) => void; setBackgroundFromUrl: (url: string) => void }>(null);
-  const [isCatalogOpen, setIsCatalogOpen] = useState(true);
-  const [showRestoreBanner, setShowRestoreBanner] = useState(false);
-  const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
+  const { generateComposite, loading: compositeLoading } = useComposite();
+  const { addToHistory, undo, redo, canUndo, canRedo, getCurrentImage } = useHistory();
+  
+  const [selectedProduct, setSelectedProduct] = useState<CatalogItem | null>(null);
+  const [sceneImageUrl, setSceneImageUrl] = useState<string | null>(null);
+  const [replaceRegion, setReplaceRegion] = useState<ReplaceRegion | null>(null);
+  const [showProductCatalog, setShowProductCatalog] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
 
-  // Check for saved session on load
-  useEffect(() => {
-    const savedSession = localStorage.getItem('furniture-swap.session:v1');
-    if (savedSession && !state.design.backgroundPhoto) {
-      setShowRestoreBanner(true);
-    }
-  }, [state.design.backgroundPhoto]);
-
-  // Handle file upload
-  const handleFileUpload = async (file: File) => {
-    setLoading('uploading', true);
-    dispatch({ type: 'SET_LOADING', payload: true });
-    dispatch({ type: 'SET_ERROR', payload: null });
-
+  // Handle scene upload
+  const handleSceneUpload = async (file: File) => {
     try {
       const reader = new FileReader();
-      reader.onload = async (e) => {
+      reader.onload = (e) => {
         const result = e.target?.result as string;
-        dispatch({ type: 'SET_BACKGROUND_PHOTO', payload: result });
-        toast.success('Room photo uploaded successfully!');
-        setLoading('uploading', false);
-        dispatch({ type: 'SET_LOADING', payload: false });
+        setSceneImageUrl(result);
+        addToHistory(result);
+        setCurrentStep(2);
+        toast.success('Scene uploaded successfully!');
       };
       reader.readAsDataURL(file);
     } catch (error) {
-      dispatch({ type: 'SET_ERROR', payload: 'Failed to upload image' });
-      toast.error('Failed to upload image');
-      setLoading('uploading', false);
-      dispatch({ type: 'SET_LOADING', payload: false });
+      toast.error('Failed to upload scene image');
     }
   };
 
-
-  // Handle furniture updates from canvas
-  const handleFurnitureUpdate = (furniture: PlacedFurniture) => {
-    dispatch({ type: 'UPDATE_FURNITURE', payload: { id: furniture.id, updates: furniture } });
+  // Handle product selection
+  const handleProductSelect = (product: CatalogItem) => {
+    console.log('Product selected:', product);
+    setSelectedProduct(product);
+    setCurrentStep(3);
+    toast.success(`Selected ${product.name}`);
   };
 
-  // Handle save design
-  useEffect(() => {
-    const handleSaveDesign = () => {
-      saveDesign();
+  // Handle product drop
+  const handleProductDrop = (file: File) => {
+    // Create a temporary CatalogItem for the dropped file
+    const tempProduct: CatalogItem = {
+      id: `uploaded-${Date.now()}`,
+      name: file.name.replace(/\.[^/.]+$/, ""), // Remove file extension
+      imageUrl: URL.createObjectURL(file),
+      category: 'uploaded',
+      dimensions: 'Custom',
+      replacementHint: 'Custom uploaded product'
     };
+    setSelectedProduct(tempProduct);
+    setCurrentStep(3);
+  };
 
-    window.addEventListener('saveDesign', handleSaveDesign);
-    return () => window.removeEventListener('saveDesign', handleSaveDesign);
-  }, [saveDesign]);
+  // Handle scene click for placement
+  const handleSceneClick = (region: ReplaceRegion) => {
+    setReplaceRegion(region);
+    setCurrentStep(4);
+  };
 
+  // Handle composite generation
+  const handleGenerateComposite = async () => {
+    if (!sceneImageUrl || !selectedProduct || !replaceRegion) {
+      toast.error('Please complete all steps first');
+      return;
+    }
 
-  const handleRestoreSession = () => {
-    const savedSession = localStorage.getItem('furniture-swap.session:v1');
-    if (savedSession) {
-      try {
-        const design = JSON.parse(savedSession);
-        dispatch({ type: 'SET_BACKGROUND_PHOTO', payload: design.backgroundPhoto });
-        dispatch({ type: 'ADD_FURNITURE', payload: design.placedFurniture });
-        setShowRestoreBanner(false);
-        toast.success('Session restored!');
-      } catch (error) {
-        console.error('Failed to restore session:', error);
-        toast.error('Failed to restore session');
-      }
+    try {
+      const result = await generateComposite({
+        sceneUrl: sceneImageUrl,
+        productUrl: selectedProduct.imageUrl,
+        replaceRegion
+      });
+
+      // Update scene with new composite
+      setSceneImageUrl(result.imageUrl);
+      addToHistory(result.imageUrl);
+      toast.success('✨ Room generated successfully! Your new design is ready!');
+    } catch (error) {
+      console.error('Composite generation failed:', error);
+      toast.error('Failed to generate composite image');
     }
   };
 
-  const handleGeneratePhoto = () => {
-    if (state.selectedItem && state.design.backgroundPhoto) {
-      // Trigger the same flow as clicking a catalog item
-      // This will be handled by the CatalogSidebar's confirm modal
-      const catalogSidebar = document.querySelector('[data-catalog-sidebar]');
-      if (catalogSidebar) {
-        // Find the selected item button and click it
-        const selectedButton = catalogSidebar.querySelector(`[data-item-id="${state.selectedItem.id}"]`);
-        if (selectedButton) {
-          (selectedButton as HTMLButtonElement).click();
-        }
-      }
+  // Handle undo/redo
+  const handleUndo = () => {
+    const previousImage = undo();
+    if (previousImage) {
+      setSceneImageUrl(previousImage);
     }
   };
 
-  const handleGenerationComplete = () => {
-    if (state.selectedItem) {
-      if (state.design.backgroundPhoto && canvasRef.current) {
-        // If there's a background photo, add furniture as overlay
-        canvasRef.current.addOverlayFromUrl(state.selectedItem.imageUrl, { scale: 0.6 });
-        toast.success(`Added ${state.selectedItem.name} to your room!`);
-      } else {
-        // If no background photo, set the furniture as the background
-        dispatch({ type: 'SET_BACKGROUND_PHOTO', payload: state.selectedItem.imageUrl });
-        toast.success(`Generated new room with ${state.selectedItem.name}!`);
-      }
+  const handleRedo = () => {
+    const nextImage = redo();
+    if (nextImage) {
+      setSceneImageUrl(nextImage);
     }
-    setIsGenerateModalOpen(false);
+  };
+
+
+
+  // Save current design
+  const handleSaveDesign = () => {
+    if (sceneImageUrl) {
+      const link = document.createElement('a');
+      link.href = sceneImageUrl;
+      link.download = 'home-canvas-design.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success('Design saved!');
+    }
   };
 
   return (
-    <div className="h-screen flex flex-col">
-      {/* Restore Session Banner */}
-      {showRestoreBanner && (
-        <div className="bg-blue-50 border-b border-blue-200 px-6 py-3">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <p className="text-sm text-blue-800">
-              Restore your last design?
-            </p>
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={handleRestoreSession}
-                className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                Restore
-              </button>
-              <button
-                onClick={() => setShowRestoreBanner(false)}
-                className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                Dismiss
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Toolbar */}
-      <Toolbar 
-        onToggleCatalog={() => setIsCatalogOpen(!isCatalogOpen)}
-        onGeneratePhoto={handleGeneratePhoto}
-      />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      {/* Hero Section */}
+      <HomeCanvasHeader />
 
       {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar */}
-        <div className={`${isCatalogOpen ? 'block' : 'hidden'} md:block`}>
-          <CatalogSidebar canvasRef={canvasRef} />
+      <div className="max-w-7xl mx-auto px-8 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 h-[700px]">
+          {/* Product Box */}
+          <div className="animate-fade-in-up">
+          <ProductBox
+            selectedProduct={selectedProduct}
+            onChangeProduct={() => {
+              console.log('Opening product catalog...');
+              setShowProductCatalog(true);
+            }}
+            onProductDrop={handleProductDrop}
+          />
+          </div>
+
+          {/* Scene Box */}
+          <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+            <SceneBox
+              sceneImageUrl={sceneImageUrl}
+              onSceneUpload={handleSceneUpload}
+              onSceneClick={handleSceneClick}
+              onUndo={handleUndo}
+              onRedo={handleRedo}
+              canUndo={canUndo}
+              canRedo={canRedo}
+              onGenerateComposite={handleGenerateComposite}
+              isGenerating={compositeLoading}
+              hasProduct={!!selectedProduct}
+            />
+          </div>
         </div>
 
-          {/* Canvas Area */}
-          <div className="flex-1 p-8">
-            <div className="h-full">
-              {/* Canvas */}
-              {state.design.backgroundPhoto ? (
-                <CanvasEditor
-                  ref={canvasRef}
-                  onObjectModified={handleFurnitureUpdate}
-                />
-              ) : (
-                <UploadArea onUpload={handleFileUpload} />
-              )}
-            </div>
+        {/* Save Design Button */}
+        {sceneImageUrl && (
+          <div className="mt-12 text-center animate-fade-in">
+            <button
+              onClick={handleSaveDesign}
+              className="px-12 py-5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 text-white font-bold text-lg rounded-full transition-all duration-300 hover:scale-105 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1"
+            >
+              <span className="flex items-center gap-3">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
+                Save Your Design
+              </span>
+            </button>
           </div>
+        )}
       </div>
 
-      {/* Footer Steps */}
-      <FooterSteps />
+      {/* Step Guide */}
+      <StepGuide currentStep={currentStep} />
+
+      {/* Product Catalog Modal */}
+      <ProductCatalogModal
+        isOpen={showProductCatalog}
+        onClose={() => setShowProductCatalog(false)}
+        onSelectProduct={handleProductSelect}
+      />
 
       {/* Toast Notifications */}
       <Toaster
         position="top-right"
         toastOptions={{
-          duration: 3000,
+          duration: 4000,
           style: {
             background: '#363636',
             color: '#fff',
           },
         }}
-      />
-
-      {/* Loading Overlay */}
-      {state.isLoading && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 flex items-center space-x-4 shadow-2xl">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <div>
-              <p className="text-gray-900 font-semibold">
-                {state.currentStep === 2 ? 'Detecting furniture...' : 'Processing...'}
-              </p>
-              <p className="text-sm text-gray-600 mt-1">Please wait a moment</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Error Message */}
-      {state.error && (
-        <div className="fixed top-6 right-6 bg-red-50 border border-red-200 text-red-800 px-6 py-4 rounded-2xl shadow-lg z-50 backdrop-blur-sm">
-          <div className="flex items-center space-x-3">
-            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-            <span className="font-medium">{state.error}</span>
-            <button
-              onClick={() => dispatch({ type: 'SET_ERROR', payload: null })}
-              className="text-red-500 hover:text-red-700 ml-2 text-xl font-bold"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Generate Modal */}
-      <GenerateModal
-        isOpen={isGenerateModalOpen}
-        onClose={() => setIsGenerateModalOpen(false)}
-        selectedItem={state.selectedItem}
-        onComplete={handleGenerationComplete}
-        hasBackgroundPhoto={!!state.design.backgroundPhoto}
       />
     </div>
   );

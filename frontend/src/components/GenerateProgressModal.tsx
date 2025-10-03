@@ -10,9 +10,9 @@ interface GenerateProgressModalProps {
 }
 
 const steps = [
-  { id: "analyze" as const, label: "Analyzing room" },
-  { id: "remove" as const, label: "Removing old furniture" },
-  { id: "place" as const, label: "Placing new furniture" }
+  { id: "analyze" as const, label: "Preparing", description: "Getting your room ready" },
+  { id: "remove" as const, label: "Adding furniture", description: "Placing your selected sofa in the room" },
+  { id: "place" as const, label: "Complete", description: "Your sofa is ready to customize" }
 ];
 
 export function GenerateProgressModal({ open, onClose, item, progress, step }: GenerateProgressModalProps) {
@@ -108,17 +108,24 @@ export function GenerateProgressModal({ open, onClose, item, progress, step }: G
                     <span className="text-xs font-medium">{index + 1}</span>
                   )}
                 </div>
-                <span
-                  className={`text-sm font-medium ${
-                    isActive
-                      ? 'text-green-900'
-                      : isCompleted
-                      ? 'text-green-900'
-                      : 'text-gray-600'
-                  }`}
-                >
-                  {stepItem.label}
-                </span>
+                <div className="flex-1">
+                  <span
+                    className={`text-sm font-medium ${
+                      isActive
+                        ? 'text-green-900'
+                        : isCompleted
+                        ? 'text-green-900'
+                        : 'text-gray-600'
+                    }`}
+                  >
+                    {stepItem.label}
+                  </span>
+                  {stepItem.description && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      {stepItem.description}
+                    </p>
+                  )}
+                </div>
               </div>
             );
           })}

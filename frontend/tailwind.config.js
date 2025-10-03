@@ -6,8 +6,34 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        sand: {
+          50: "#FAF8F5",
+          100: "#F4F1EC",
+          200: "#E9E4DA",
+          300: "#DDD6C7",
+          400: "#CFC6B5",
+          500: "#BEB29A",
+          600: "#9F937C",
+          700: "#7E7562",
+          800: "#5F594B",
+          900: "#4A463E"
+        },
+        stoneink: "#2A2A2A",
+        accent: "#7A9E9F",      // desaturated teal
+        blush: "#EBD9CF",       // soft blush for highlights
+      },
+      fontFamily: {
+        display: ["'Playfair Display'", "serif"],
+        sans: ["Inter", "ui-sans-serif", "system-ui"],
+      },
+      boxShadow: {
+        soft: "0 10px 30px rgba(0,0,0,0.06)",
+        card: "0 6px 18px rgba(0,0,0,0.07)",
+        inset: "inset 0 1px 0 rgba(255,255,255,0.6)"
+      },
       backdropBlur: {
-        xs: '2px',
+        xs: "2px"
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
@@ -31,29 +57,4 @@ module.exports = {
     },
   },
   plugins: [],
-  safelist: [
-    'from-blue-50',
-    'via-white',
-    'to-purple-50',
-    'from-blue-100',
-    'to-purple-100',
-    'bg-white/70',
-    'bg-white/50',
-    'bg-white/80',
-    'bg-white/90',
-    'backdrop-blur-md',
-    'backdrop-blur-sm',
-    'border-white/20',
-    'border-white/30',
-    'bg-gray-50',
-    'bg-gray-100',
-    'bg-gray-200',
-    'text-gray-600',
-    'text-gray-700',
-    'text-gray-800',
-    'text-gray-900',
-    'border-gray-200',
-    'border-gray-300',
-  ],
 }
-

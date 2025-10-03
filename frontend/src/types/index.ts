@@ -17,6 +17,20 @@ export interface RoomDesign {
   placedFurniture: PlacedFurniture[];
 }
 
+export interface SemanticData {
+  style: string;
+  color: string;
+  material: string;
+  shape: string;
+  features: string[];
+  roomType: string;
+  placement: string;
+  lighting: string;
+  perspective: string;
+  background: string;
+  aiPrompt: string;
+}
+
 export interface CatalogItem {
   id: string;
   name: string;
@@ -24,6 +38,7 @@ export interface CatalogItem {
   category: "sofa" | "chair" | "table";
   dimensions?: string;
   replacementHint?: string;
+  semanticData?: SemanticData;
 }
 
 export interface DetectionResult {
@@ -47,5 +62,20 @@ export interface SwapResponse {
   success: boolean;
   updatedPhoto?: string;
   error?: string;
+}
+
+export interface ReplaceRegion {
+  x: number;
+  y: number;
+}
+
+export interface CompositeRequest {
+  sceneUrl: string;
+  productUrl: string;
+  replaceRegion: ReplaceRegion;
+}
+
+export interface CompositeResponse {
+  imageUrl: string;
 }
 
