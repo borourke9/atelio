@@ -74,22 +74,29 @@ export function SceneBox({
   const handleImageTouch = useCallback((e: React.TouchEvent<HTMLImageElement>) => {
     if (!imageRef.current) return;
     
-    // Prevent default touch behavior
+    // Prevent default touch behavior to avoid scrolling
     e.preventDefault();
+    e.stopPropagation();
     
     const rect = imageRef.current.getBoundingClientRect();
-    const touch = e.touches[0];
+    const touch = e.touches[0] || e.changedTouches[0];
+    
+    if (!touch) return;
     
     // Calculate relative position within the image
     const x = touch.clientX - rect.left;
     const y = touch.clientY - rect.top;
     
+    // Ensure coordinates are within bounds
+    const boundedX = Math.max(0, Math.min(x, rect.width));
+    const boundedY = Math.max(0, Math.min(y, rect.height));
+    
     // Set marker position for visual feedback
-    setClickMarker({ x, y });
+    setClickMarker({ x: boundedX, y: boundedY });
     
     // Calculate normalized coordinates (0-1 range)
-    const normalizedX = x / rect.width;
-    const normalizedY = y / rect.height;
+    const normalizedX = boundedX / rect.width;
+    const normalizedY = boundedY / rect.height;
     
     // Create replace region with normalized coordinates
     const region: ReplaceRegion = {
@@ -99,6 +106,8 @@ export function SceneBox({
     
     setReplaceRegion(region);
     onSceneClick(region);
+    
+    console.log('Touch event:', { x: boundedX, y: boundedY, normalizedX, normalizedY });
   }, [onSceneClick]);
 
   const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -194,11 +203,13 @@ export function SceneBox({
                   ref={imageRef}
                   src={sceneImageUrl}
                   alt="Room scene"
-                  className={`max-w-full max-h-full object-contain rounded-2xl border border-white/30 cursor-crosshair shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-105 select-none ${
+                  className={`max-w-full max-h-full object-contain rounded-2xl border border-white/30 cursor-crosshair shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-105 select-none touch-manipulation ${
                     isImageUpdating ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
                   }`}
                   onClick={handleImageClick}
+                  onTouchStart={handleImageTouch}
                   onTouchEnd={handleImageTouch}
+                  style={{ touchAction: 'none' }}
                   key={imageKey} // Force re-render when image changes
                 />
               
