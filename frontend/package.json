@@ -1,8 +1,12 @@
 {
-  "name": "frontend",
+  "name": "atelio-ai-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "ATELIO.AI - AI-Powered Room Design Application",
+  "author": "NEXGEN Technologies",
+  "copyright": "© 2025 NEXGEN Technologies. All rights reserved.",
+  "license": "PROPRIETARY",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

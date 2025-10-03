@@ -1,16 +1,17 @@
 {
-  "name": "backend",
+  "name": "atelio-ai-backend",
   "version": "1.0.0",
   "main": "index.js",
+  "description": "ATELIO.AI Backend API - AI-Powered Room Design Service",
+  "author": "NEXGEN Technologies",
+  "copyright": "© 2025 NEXGEN Technologies. All rights reserved.",
+  "license": "PROPRIETARY",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "keywords": ["ai", "interior-design", "furniture", "nexgen", "proprietary"],
   "dependencies": {
     "@google/genai": "^1.22.0",
     "axios": "^1.12.2",

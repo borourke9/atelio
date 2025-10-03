@@ -181,6 +181,35 @@ function AppContent() {
       {/* Step Guide */}
       <StepGuide currentStep={currentStep} />
 
+      {/* Footer */}
+      <footer className="bg-slate-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="mb-6">
+              <h3 className="text-2xl font-light tracking-wide mb-2">ATELIO.AI</h3>
+              <p className="text-slate-400 font-light">AI-Powered Interior Design</p>
+            </div>
+            
+            <div className="border-t border-slate-800 pt-8">
+              <p className="text-slate-500 text-sm font-light tracking-wide">
+                © 2025 NEXGEN Technologies. All rights reserved.
+              </p>
+              <p className="text-slate-600 text-xs mt-2 font-light">
+                This software and its contents are proprietary and confidential. 
+                Unauthorized reproduction, distribution, or modification is strictly prohibited.
+              </p>
+              <div className="mt-4 flex justify-center space-x-6 text-xs text-slate-500">
+                <span>Privacy Policy</span>
+                <span>•</span>
+                <span>Terms of Service</span>
+                <span>•</span>
+                <span>Legal Rights Reserved</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+
       {/* Product Catalog Modal */}
       <ProductCatalogModal
         isOpen={showProductCatalog}
